@@ -1,10 +1,11 @@
 ---
 layout: post
-title: "How to install OSMuf"
+title: "OSMuf"
 date: 2019-03-07
 ---
+Edited 2 May 2020
 
-## How to install OSMuf
+OSMuf is a Python library for measuring urban form primarily in terms of buildings and land use. 
 
 Minimal instructions
 
