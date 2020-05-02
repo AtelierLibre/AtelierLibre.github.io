@@ -1,10 +1,12 @@
 ---
 layout: post
-title: "Install OSMuf"
+title: "How to install OSMuf"
 date: 2019-03-07
 ---
 
-## Steps to install OSMuf
+## How to install OSMuf
+
+Minimal instructions
 
 ### First set up a new conda environment with all dependencies
 
