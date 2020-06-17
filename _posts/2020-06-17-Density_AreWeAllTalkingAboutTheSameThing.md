@@ -20,7 +20,7 @@ What density should these be developed at, particularly in the case of the arc w
 
 ## London's existing approach to density
 
-For many years density guidelines for new residential developments in London have been set out in the [Sustainable Residential Quality Density Matrix](https://www.london.gov.uk/what-we-do/planning/london-plan/current-london-plan/london-plan-chapter-3/policy-34-optimising). The appropriate density for a site is based on it's Public Transport Accessibility Level and setting (Central, Urban, Suburban). Simplified to dwellings per hectare it looks like this:
+For many years density guidelines for new residential developments in London have been set out in the [Sustainable Residential Quality Density Matrix](https://www.london.gov.uk/what-we-do/planning/london-plan/current-london-plan/london-plan-chapter-3/policy-34-optimising). The appropriate density for a site is based on its Public Transport Accessibility Level (PTAL) and setting (Central, Urban, Suburban). Simplified to dwellings per hectare it looks like this:
 
 |Setting|PTAL 0-1|PTAL 2-3|PTAL 4-6|
 |---|---|---|---|
@@ -34,7 +34,7 @@ The densities being discussed are different by orders of magnitude. Is 35d/ha lo
 
 ## Exisiting densities of towns and cities in England and Wales
 
-An alternative source of information on residential density in England and Wales is the census. The 2011 census provides a benchmark of the densities of existing towns and cities (defined as [Built Up Areas](https://www.nomisweb.co.uk/articles/ref/builtupareas_userguidance.pdf) (BUA)). A [notebook that accompanies this blog post](https://github.com/AtelierLibre/AtelierLibre.github.io/blob/master/_jupyter/200617_BUA_DwellingDensity.ipynb) processes the data as follows:
+An alternative source of information on residential density in England and Wales is the census. The 2011 census provides a benchmark of the densities of existing towns and cities - defined as [Built Up Areas](https://www.nomisweb.co.uk/articles/ref/builtupareas_userguidance.pdf) (BUA). A [notebook that accompanies this blog post](https://github.com/AtelierLibre/AtelierLibre.github.io/blob/master/_jupyter/200617_BUA_DwellingDensity.ipynb) processes the data as follows:
 
 1. Downloads Built Up Area geometry from the Office for National Statistics
 2. Downloads Built Up Area census data from nomis
@@ -77,8 +77,8 @@ We can identify London in the graph from its size alone or we can extract it fro
 
 ## Clearly we are not talking about the same thing
 
-How can it be that London needs design guidance on developing housing at densities of up to 3,000 d/ha when its 2011 density was just 23d/ha and the average dwelling density of all Built Up Areas in England and Wales is just 10d/ha?
+How can it be that London needs design guidance on developing housing at densities of up to 3,000d/ha when its 2011 density was just 23d/ha and the average dwelling density of all Built Up Areas in England and Wales was just 10d/ha?
 
-If we are planning new towns and cities in the arc the densities in the London Plan are clearly inappropriate. Even planning them at 20d/ha would make them denser than around 95% of existing Built Up Areas in England and Wales.
+If we are planning new towns and cities in the arc the densities in the London Plan are clearly inappropriate. Even planning the new settlements at 20d/ha would make them denser than 95% of existing Built Up Areas.
 
 Despite all being expressed in terms of dwellings per hectare and all being calculated simply as the number of dwellings divided by the area of land that they occupy, high density in London's planning policy (405d/ha) is clearly not the same as high density in design advice given to the mayor (3000d/ha) or the high density of Built Up Areas in England and Wales (32d/ha).
