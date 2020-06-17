@@ -45,7 +45,7 @@ The following map shows the results:
 
 ![Map of BUAs in England and Wales coloured by dwelling density](/images/BUA_dwelling_density_map.png "Map of BUAs in England and Wales coloured by dwelling density")
 
-The thing to note is the colour bar which shows that in 2011 no Built Up Area in England and Wales had a dwelling density higher than 32d/ha. If 32d/ha is the maximum density, what is a typical density? To get a better idea of the range of densities in existing towns and cities we can plot their distribution and look at their summary statistics:
+The thing to note is the colour bar which shows that in 2011 no Built Up Area in England and Wales had a dwelling density higher than 32d/ha. If 32d/ha was the maximum density, what was a typical density? To get a better idea of the range of densities we can plot their distribution and look at their summary statistics:
 
 ![Histogram showing the distribution of BUA dwelling densities](/images/BUA_dwelling_density_distribution.png "Histogram showing the distribution of BUA dwelling densities")
 
@@ -55,9 +55,9 @@ The thing to note is the colour bar which shows that in 2011 no Built Up Area in
 |BUAs >= 10,000 people|16|3|3|16|28|
 |BUAs >= 10,000 dwellings|17|2|10|16|25|
 
-As the graph and table shows, in 2011 the average dwelling density (both median and mean) of all Built Up Areas in England and Wales was 10d/ha - over three times lower than the lowest residential density in the London Plan.
+As the graph and table show, in 2011 the average dwelling density (both median and mean) of all Built Up Areas in England and Wales was 10d/ha - over three times lower than the lowest residential density in the London Plan.
 
-What about the arc and the garden towns of 10,000 dwellings to city-scale developments of 150,000 dwellings? Filtering the data to extract only towns and cities with 10,000 dwellings or more moves the averages up to 16-17d/ha but the maximum down to 25d/ha. It is worth bearing in mind that these numbers include London.
+How can we relate this information to the arc and the garden towns of 10,000 dwellings to city-scale developments of 150,000 dwellings? Filtering the data to extract only towns and cities with 10,000 dwellings or more moves the averages up to 16-17d/ha but the maximum down to 25d/ha. It is worth bearing in mind that these numbers include London.
 
 ### Are bigger towns and cities denser?
 
@@ -75,7 +75,7 @@ We can identify London in the graph from its size alone or we can extract it fro
 |---|---|---|---|---|
 |4706|Greater London BUA|4035768.0|173789.7|23.2|
 
-## Clearly we are not talking about the same thing
+## We are not talking about the same thing
 
 How can it be that London needs design guidance on developing housing at densities of up to 3,000d/ha when its 2011 density was just 23d/ha and the average dwelling density of all Built Up Areas in England and Wales was just 10d/ha?
 

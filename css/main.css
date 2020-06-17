@@ -40,12 +40,12 @@ p {
     }
 table {
     font-size: 1.5em;
-    width: 70%;
+    width: 100%;
     }
 th {
-    padding: 15px;
+    padding: 10px;
     text-align: left;
-    color: white;
+    color: #eaeaf2;
     background-color: #333;
 }
 td {
