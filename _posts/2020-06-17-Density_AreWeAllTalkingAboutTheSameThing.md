@@ -34,7 +34,7 @@ The densities being discussed are different by orders of magnitude. Is 35d/ha lo
 
 ## Exisiting densities of towns and cities in England and Wales
 
-An alternative source of information on residential density in England and Wales is the census. The 2011 census provides a benchmark of the densities of existing towns and cities (defined as [Built Up Areas](https://www.nomisweb.co.uk/articles/ref/builtupareas_userguidance.pdf) (BUA)). A [notebook that accompanies this blog post](../_jupyter/200617_BUA_DwellingDensity.ipynb) processes the data as follows:
+An alternative source of information on residential density in England and Wales is the census. The 2011 census provides a benchmark of the densities of existing towns and cities (defined as [Built Up Areas](https://www.nomisweb.co.uk/articles/ref/builtupareas_userguidance.pdf) (BUA)). A [notebook that accompanies this blog post](https://github.com/AtelierLibre/AtelierLibre.github.io/blob/master/_jupyter/200617_BUA_DwellingDensity.ipynb) processes the data as follows:
 
 1. Downloads Built Up Area geometry from the Office for National Statistics
 2. Downloads Built Up Area census data from nomis
@@ -43,11 +43,11 @@ An alternative source of information on residential density in England and Wales
 
 The following map shows the results:
 
-![Map of BUAs in England and Wales coloured by dwelling density](../images/BUA_dwelling_density_map.png "Map of BUAs in England and Wales coloured by dwelling density")
+![Map of BUAs in England and Wales coloured by dwelling density](/images/BUA_dwelling_density_map.png "Map of BUAs in England and Wales coloured by dwelling density")
 
 The thing to note is the colour bar which shows that in 2011 no Built Up Area in England and Wales had a dwelling density higher than 32d/ha. If 32d/ha is the maximum density, what is a typical density? To get a better idea of the range of densities in existing towns and cities we can plot their distribution and look at their summary statistics:
 
-![Histogram showing the distribution of BUA dwelling densities](../images/BUA_dwelling_density_distribution.png "Histogram showing the distribution of BUA dwelling densities")
+![Histogram showing the distribution of BUA dwelling densities](/images/BUA_dwelling_density_distribution.png "Histogram showing the distribution of BUA dwelling densities")
 
 |(d/ha)|mean|standard deviation|min|median|max|
 |---|:---:|---|---|---|---|
@@ -63,7 +63,7 @@ What about the arc and the garden towns of 10,000 dwellings to city-scale develo
 
 A common assumption might be that bigger towns and cities are denser, to test this we can plot the dwelling density against area:
 
-![Scatter plot of BUA dwelling densities against area](../images/BUA_dwelling_density_by_area.png "Scatter plot of BUA dwelling densities against area")
+![Scatter plot of BUA dwelling densities against area](/images/BUA_dwelling_density_by_area.png "Scatter plot of BUA dwelling densities against area")
 
 Clearly the smallest settlements cluster around 7d/ha and the larger settlements do trend upwards towards 23d/ha but 20d/ha appears to be a threshold which few places breach.
 
