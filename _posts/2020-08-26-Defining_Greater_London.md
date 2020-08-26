@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Defining Greater London"
-date: 2020-08-25
+date: 2020-08-26
 ---
 
 *NOTE: [This notebook](https://github.com/AtelierLibre/AtelierLibre.github.io/blob/master/_jupyter/1_MAUP_Notebook-GetData.ipynb) accesses the data for this post, [this notebook](https://github.com/AtelierLibre/AtelierLibre.github.io/blob/master/_jupyter/2_MAUP_Defining_Greater_London.ipynb) processes it.*
