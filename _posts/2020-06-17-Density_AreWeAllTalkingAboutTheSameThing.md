@@ -30,7 +30,7 @@ For many years density guidelines for new residential developments in London hav
 
 Concerned that London's approach to density was hindering housing supply, in 2016 the GLA commissioned a [review of housing density in London](https://www.london.gov.uk/what-we-do/planning/london-plan/london-plan-technical-and-research-reports#acc-i-48973). Around the same time the Mayor's Design Advisory Group published [Growing London](https://www.london.gov.uk/sites/default/files/mdag_agenda_growing_london.pdf), a short report that advised that "*With developments being proposed in London reaching densities over 3,000 units per hectare, policies need to be updated and research undertaken to better understand the challenges and opportunities of building at such high densities.*" (p.42)
 
-The densities being discussed are different by orders of magnitude. Is 35d/ha low density? Is 405d/ha high density? What about 3000d/ha? If you are planning new settlements in the arc, where in that range of densities should you be targetting?
+The densities being discussed are different by orders of magnitude. Is 35d/ha low density? Is 405d/ha high density? What about 3000d/ha? If you are planning new settlements in the arc, where in that range of densities should you be targeting?
 
 ## Exisiting densities of towns and cities in England and Wales
 
