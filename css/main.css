@@ -10,7 +10,7 @@ nav ul, footer ul {
     list-style: none;
     font-weight: bold;
     }
-nav ul li, footer ul li {
+nav ul li {
     display: inline;
     margin-right: 20px;
     }
@@ -61,6 +61,9 @@ img {
 footer {
     border-top: 1px solid #d5d5d5;
     font-size: .8em;
+    }
+footer ul li {
+    margin-right: 20px;
     }
 ul.posts {
     margin: 20px auto 40px;
