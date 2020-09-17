@@ -14,7 +14,7 @@ However, cities have a responsibility to manage the total area of land available
 
 When 'optimising land use' (often a euphamism for increasing density) there is an interrelationship between the desired urban form, the street network and the resultant density. The relative permanence of the layout of the street network may explain the lack of focus on its role however, large scale urban regeneration projects and urban extensions are opportunities to revisit it.
 
-This notebook is a first attempt at illustrating the relationship between the street network, urban form and density in two common types of urban form, the perimeter block and terrace/row housing. It demonstrates how two superficially similar building arrangements (abutting buildings aligned along the street) have fundamentally different relationships with the street network.
+[This interactive web page](https://atelierlibre.org/density_calculator/Street_layout_and_density.html) is a first attempt at illustrating the relationship between the street network, urban form and density in two common types of urban form, the perimeter block and terrace/row housing. It demonstrates how two superficially similar building arrangements (abutting buildings aligned along the street) have fundamentally different relationships with the street network.
 
 Some key points to note:
 
