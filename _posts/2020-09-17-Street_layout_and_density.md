@@ -4,7 +4,7 @@ title: "Street layout and density"
 date: 2020-09-17
 ---
 
-*NOTE: [This notebook](https://github.com/AtelierLibre/facon) contains the source code.*
+*NOTE: The first version of the street layout and density calculator is available at [this webpage](https://atelierlibre.org/density_calculator/Street_layout_and_density.html). [This notebook](https://github.com/AtelierLibre/facon) contains the source code.*
 
 ![Street layout and density calculator](/images/Density_calculator.png "Street layout and density calculator")
 
