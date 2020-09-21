@@ -20,7 +20,7 @@ Trying to apply this approach to London and real-world POIs downloaded from Open
 
 The hypothesis of the blogpost and notebook is that, as DBSCAN also uses a threshold distance to identify nearest neighbours, it might be possible to combine the two libraries to allow network constrained clustering with both a larger number of starting POIs/nearest nodes and a larger street network. The notebook linked to above goes through the process step-by-step to produce the following image:
 
-![Network constrained clustering shops and offices in London](images/London_network_constrained_clustering.png "Network constrained clustering shops and offices in London")
+![Network constrained clustering shops and offices in London](/images/London_network_constrained_clustering.png "Network constrained clustering shops and offices in London")
 
 By overlaying the results on polygons of town centres downloaded from the [London Datastore](https://data.london.gov.uk/) it is possible to see that the clustering does work though there are a few points to note:
 
