@@ -11,10 +11,9 @@ This blog post was originally inspired by another [blog post by Geoff Boeing](ht
 I encountered two bottlenecks:
 
 1. The 1,000,000 points in the example were actually quite tightly clustered when they were created. Once they have been attached to the nearest nodes in the network, there are actually only 549 nodes forming the basis of the origin-destination matrix.
+2. The street network in the example is relatively small. Apart from the difficulties handling a large number of POIs there are also challenges working with the street networks of larger cities. NetworkX can be slow when trying to calculate all of the shortest paths through the network.
 
 Trying to apply this approach to London and real-world POIs downloaded from OpenStreetMap didn't work because, even though we may be starting with a much smaller number of POIs (35,000 instead of 1,000,000), the POIs are more evenly distributed and attach to a larger number of nearest nodes - in this example around 16,000. When following the example notebook just creating the OD matrix with that many entries was a challenge.
-
-2. The street network in the example is relatively small. Apart from the difficulties handling a large number of POIs there are also challenges working with the street networks of larger cities. NetworkX can be slow when trying to calculate all of the shortest paths through the network.
 
 [Pandana](https://github.com/UDST/pandana) uses contraction hierarchies to carry out extremely fast network-based nearest POI queries and also benefits from limiting its search to within a threshold distance from each node in the network.
 
