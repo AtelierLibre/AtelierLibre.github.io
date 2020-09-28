@@ -6,9 +6,9 @@ date: 2020-09-28
 
 *NOTE: This blog post is based on [this notebook](https://github.com/AtelierLibre/blog_post_notebooks/blob/master/200928_Alresford_street_network_centrality.ipynb).*
 
-This post takes [OSMnx](https://github.com/gboeing/osmnx)'s street network analysis capabilities and applies them onto a small market town in England. It considers whether the betweenness centrality and closeness centrality values reflect real-world characteristics that a local person would recognise. The nodes are unweighted
+This post takes [OSMnx](https://github.com/gboeing/osmnx)'s street network analysis capabilities and applies them onto a small market town in England. It considers whether the betweenness centrality and closeness centrality values reflect real-world characteristics that a local person would recognise.
 
-## Plot street junctions coloured by betweenness centrality
+## Street junctions coloured by betweenness centrality
 
 Of the two network metrics that we are going to look at, betweenness centrality measures the extent to which each node in a network is 'between' all of the others. The shortest paths between every pair of nodes in the network are calculated and then every node in the network is given a score based on the proportion of these shortest paths that pass through it. It can be seen as a measure of how critical a node is to the network and a means of identifying bottlenecks.
 
@@ -18,7 +18,7 @@ The map below shows that the betweenness centrality measures and what we know of
 
 ![New Alresford street junctions coloured by betweenness centrality](/images/New_Alresford_betweenness_centrality.png "New Alresford street junctions coloured by betweenness centrality")
 
-## Plot street junctions coloured by closeness centrality
+## Street junctions coloured by closeness centrality
 
 The importance of Jacklyn's Lane to Alresford's street network (its betweenness centrality) is mirrored by how accessible the rest of the town is from it (its closeness centrality). Closeness centrality is relative indicator of how close each node in the network is to all of the other nodes in the network. 
 
