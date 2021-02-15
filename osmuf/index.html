@@ -5,11 +5,11 @@ title: OSMuf
 <h1>{{ page.title }}</h1>
 <p>First published 15 February 2021.</p>
 
-{% include Welwyn_Garden_City_osmuf_bokeh.html %}
+
 
 <h2>What is OSMuf?</h2>
 
-<p>OSMuf (OpenStreetMap - urban form) generates common metrics of urban form from OpenStreetMap data. </p>
+<p>OSMuf (OpenStreetMap - urban form) generates common metrics of urban form from OpenStreetMap data.</p>
 
 <h2>What does it do?</h2>
 <p>It uses OSMnx to download street segments, land use areas and building footprints. It processes the street network with NetworkX and then polygonises it with Shapely. It then overlaps the street polygons and land use areas, using NetworkX's connected components to combine polygons in the two layers into an approximation of urban blocks before working with Shapely and GeoPandas to both calculate building density and measure a range of relevant dimensions from the urban blocks before saving to a GeoPackage.</p>
