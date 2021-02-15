@@ -1,6 +1,6 @@
 ---
 layout: default
-title: test
+title: OSMuf
 ---
 <h1>{{ page.title }}</h1>
 <p>First published 15 February 2021.</p>
@@ -8,4 +8,18 @@ title: test
 <h2>What is OSMuf?</h2>
 
 <p>OSMuf (OpenStreetMap - urban form) generates common metrics of urban form from OpenStreetMap data.</p>
+
+<h2>What does it do?</h2>
+<p>It uses OSMnx to download street segments, land use areas and building footprints. It processes the street network with NetworkX and then polygonises it with Shapely. It then overlaps the street polygons and land use areas, using NetworkX's connected components to combine polygons in the two layers into an approximation of urban blocks before working with Shapely and GeoPandas to both calculate building density and measure a range of relevant dimensions from the urban blocks before saving to a GeoPackage.</p>
+
+<p>Bokeh is then used to create an interactive visualisation of the various metrics.</p>
+
+<h2>What does it show?</h2>
+<p>It primarily shows the building density of each block measured as FSI (Floor Space Index or Floor Area Ratio) and GSI (Ground Space Index or Plot Ratio) against a range of other metrics and ratios.</p>
+
+<h2>What's the point?</h2>
+<p>Planning often asks for developments to state their proposed density as a means of controlling scale and for comparison with other schemes. However, inconsistent site boundaries and a lack of open data make these densities hard to compare, particularly with existing areas. OSMuf is an attempt to face these challenges by using on largely unambiguous street blocks as the boundary and working with OpenStreetMap as its data source.</p>
+
+<h2>Note</h2>
+<p>Please note this example is based on the development branch of OSMuf. OSMuf is very much a work in progress but already generates some useful information.</p>
 <!-- /.blurb -->
