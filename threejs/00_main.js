@@ -50,9 +50,9 @@ function render() {
 
 const dummy = new THREE.Object3D();
 const settings = {
-  numX: 50,
-  numY: 50,
-  numZ: 50,
+  numX: 20,
+  numY: 20,
+  numZ: 20,
   stepX: 10,
   stepY: 10,
   stepZ: 10,
@@ -142,9 +142,9 @@ const updateMesh = () => {
 
 // Dat GUI main
 gui.add(props, 'blockLength', 1, 20, 0.01).onChange( value => {updateGeometry();});
-gui.add(settings, "numX").min(1).max(50).step(1).onChange(updateMesh);
-gui.add(settings, "numY").min(1).max(50).step(1).onChange(updateMesh);
-gui.add(settings, "numZ").min(1).max(50).step(1).onChange(updateMesh);
+gui.add(settings, "numX").min(1).max(20).step(1).onChange(updateMesh);
+gui.add(settings, "numY").min(1).max(20).step(1).onChange(updateMesh);
+gui.add(settings, "numZ").min(1).max(20).step(1).onChange(updateMesh);
 gui.add(settings, "stepX").min(0).max(10).step(0.1).onChange(updateMesh);
 gui.add(settings, "stepY").min(0).max(10).step(0.1).onChange(updateMesh);
 gui.add(settings, "stepZ").min(0).max(10).step(0.1).onChange(updateMesh);
