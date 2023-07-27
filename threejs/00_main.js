@@ -107,8 +107,6 @@ const updateGeometry = () => {
 
   mesh.geometry = shapeGeometry;
 
-  console.log(shapeGeometry.area)
-
   render();
 }
 
@@ -162,6 +160,8 @@ window.addEventListener( 'resize', onWindowResize );
 
 // Handle resizing the view port (window)
 function onWindowResize() {
+
+    console.log('window resize');
 
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
