@@ -157,3 +157,15 @@ orbitControls.maxPolarAngle = Math.PI / 2 // keep camera above ground
 
 // First call of updateMesh to create the starting geometry
 updateMesh();
+
+window.addEventListener( 'resize', onWindowResize );
+
+// Handle resizing the view port (window)
+function onWindowResize() {
+
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+
+    renderer.setSize( window.innerWidth, window.innerHeight );
+
+}
