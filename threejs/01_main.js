@@ -286,8 +286,6 @@ scene.add( lights.directionalLight );
 scene.add( lights.hemisphereLight );
 
 // SKYDOME
-const vertexShader = document.getElementById( 'vertexShader' ).textContent;
-const fragmentShader = document.getElementById( 'fragmentShader' ).textContent;
 const uniforms = {
 	'topColor': { value: new THREE.Color( 0x0077ff ) },
 	'bottomColor': { value: new THREE.Color( 0xffffff ) },
@@ -299,8 +297,6 @@ scene.fog.color.copy( uniforms[ 'bottomColor' ].value );
 const skyGeometry = new THREE.SphereGeometry( 4000, 32, 15 );
 const skyMaterial = new THREE.ShaderMaterial( {
 	uniforms: uniforms,
-	vertexShader: vertexShader,
-	fragmentShader: fragmentShader,
 	side: THREE.BackSide
 } );
 const sky = new THREE.Mesh( skyGeometry, skyMaterial );
@@ -351,5 +347,4 @@ function onWindowResize() {
 }
 
 // First call of updateMesh and render to create the starting geometry
-// updateMesh();
 render();
