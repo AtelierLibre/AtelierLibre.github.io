@@ -3,6 +3,11 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls';
 import { GUI } from "three/addons/libs/lil-gui.module.min.js";
 
+// Access the canvas
+const canvas = document.querySelector('canvas.webgl')
+// Access the floating data div
+const textDiv = document.getElementById("floatingRectangle");
+
 // SCENE
 const scene = new THREE.Scene();
 scene.background = new THREE.Color().setHSL( 0.6, 0, 1 );
@@ -13,14 +18,14 @@ const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.inner
 camera.position.x = 200;
 camera.position.y = 200;
 camera.position.z = -200;
+camera.lookAt(new THREE.Vector3(0,6,0));
 
 // RENDERER
-const renderer = new THREE.WebGLRenderer({antialias: true});
+const renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
 renderer.outputColorSpace = THREE.SRGBColorSpace; // amended from book
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;//VSMShadowMap;
 renderer.setSize( window.innerWidth, window.innerHeight );
-document.body.appendChild( renderer.domElement );
 
 // Convenience render function
 function render() {
@@ -193,8 +198,6 @@ const buildingInstancedMesh = new THREE.InstancedMesh(
   blockCount * maxNumberOfStoreys
 );
 buildingInstancedMesh.rotateX(-Math.PI/2);
-// try this - no changes
-// buildingInstancedMesh.instanceMatrix.setUsage( THREE.DynamicDrawUsage ); // will be updated every frame
 buildingInstancedMesh.castShadow = true;
 buildingInstancedMesh.receiveShadow = true;
 scene.add(buildingInstancedMesh);
@@ -237,12 +240,21 @@ function changeBlockShape() {
   const buildingLength = innerBlockLength - buildingSetBack;
   const buildingDepth = innerBlockDepth - buildingSetBack;
   const planDepth = gui_values.planDepth;
+  const courtyardLength = buildingLength - (2 * planDepth);
+  const courtyardDepth = buildingDepth - (2 * planDepth);
   const storeyHeight = 3.2;
   const numberOfStoreys = gui_values.numberOfStoreys;
 
-  console.log("Block Area (ha)", (Math.round(blockLength*blockDepth/100)/100));
-  console.log("Building footprint (m2)", Math.round(buildingLength*buildingDepth));
-
+  const blockArea = (blockLength*blockDepth);
+  const blockAreaHa = (blockArea/10000);
+  const innerBlockArea = innerBlockLength * innerBlockDepth;
+  const innerBlockAreaHa = (innerBlockArea/10000);
+  const buildingFootprint = ((buildingLength*buildingDepth) - (courtyardLength*courtyardDepth));
+  const buildingGrossFloorArea = (
+    numberOfStoreys * ((buildingLength*buildingDepth) - (courtyardLength*courtyardDepth))
+    );
+  const coverageAreaRatio = buildingFootprint/blockArea;
+  const floorAreaRatio = buildingGrossFloorArea/blockArea;
 
   // Create the new block geometry
   const newBlockShape = createRectShape(blockLength, blockDepth);
@@ -271,6 +283,14 @@ function changeBlockShape() {
   updateInstancedMeshPositions(streetBlockInstancedMesh);
   updateInstancedMeshPositions(innerStreetBlockInstancedMesh);
   updateInstancedMeshPositions(buildingInstancedMesh, numberOfStoreys);
+
+  // Update the floating data div
+  textDiv.innerHTML = `<ul>
+  <li>Gross Block Area (Ha): ${Math.round(blockAreaHa*100)/100}</li>
+  <li>Net Block Area (Ha): ${Math.round(innerBlockAreaHa*100)/100}</li>
+  <li>Coverage Area Ratio: ${Math.round(coverageAreaRatio*100)}%</li>
+  <li>Floor Area Ratio: ${Math.round(floorAreaRatio*100)}%</li>
+  </ul>`;
 
   // Render the changes
   console.log(renderer.info.memory.geometries);
@@ -323,12 +343,12 @@ scene.add( gridHelper );
 // GUI
 const gui = new GUI();
 const blocksAndStreetsFolder = gui.addFolder( 'Blocks and Streets');
-blocksAndStreetsFolder.add(gui_values, "blockLength", 10, 500, 0.01).name("Block Length (m)").onChange( value => {changeBlockShape();});
-blocksAndStreetsFolder.add(gui_values, "blockDepth", 10, 500, 0.01).name("Block Depth (m)").onChange( value => {changeBlockShape();});
-blocksAndStreetsFolder.add(gui_values, "streetWidth", 1, 50, 0.01).name("Street Width (m)").onChange( value => {changeBlockShape();});
+blocksAndStreetsFolder.add(gui_values, "blockLength", 10, 500, 0.1).name("Block Length (m)").onChange( value => {changeBlockShape();});
+blocksAndStreetsFolder.add(gui_values, "blockDepth", 10, 500, 0.1).name("Block Depth (m)").onChange( value => {changeBlockShape();});
+blocksAndStreetsFolder.add(gui_values, "streetWidth", 1, 50, 0.1).name("Street Width (m)").onChange( value => {changeBlockShape();});
 const buildingsFolder = gui.addFolder( 'Buildings');
-buildingsFolder.add(gui_values, "buildingSetBack", 0, 50, 0.01).name("Set Back (m)").onChange( value => {changeBlockShape();});
-buildingsFolder.add(gui_values, "planDepth", 0, 50, 0.01).name("Plan Depth (m)").onChange( value => {changeBlockShape();});
+buildingsFolder.add(gui_values, "buildingSetBack", 0, 50, 0.1).name("Set Back (m)").onChange( value => {changeBlockShape();});
+buildingsFolder.add(gui_values, "planDepth", 0, 50, 0.1).name("Plan Depth (m)").onChange( value => {changeBlockShape();});
 buildingsFolder.add(gui_values, "numberOfStoreys", 0, 30, 1).name("Storeys").onChange( value => {changeBlockShape();});
 
 // orbit controls - must come after declaration of camera and renderer
@@ -346,5 +366,6 @@ function onWindowResize() {
     render(); // Doesn't seem to work on Firefox without this
 }
 
-// First call of updateMesh and render to create the starting geometry
+// First call of changeBlockShape and render to initialise everything
+changeBlockShape();
 render();
