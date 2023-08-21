@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+
+<html lang=”en”>
+
+<head>    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="./threejs.css">
+</head>
+
+<body>
+    <div id="menu" style="position: absolute; z-index: 2; left: 1024px; top: 465px; display: none;">
+        Select
+        <br>
+        <label for="streetTypeSelector">Street type:</label>
+        <select id="streetTypeSelector" name="street_sel_name"><!-- onchange="this.form.submit();"> -->
+            <option value="" selected disabled hidden>Choose here</option>
+            <option value="Primary">Primary</option>
+            <option value="Secondary">Secondary</option>
+        </select>
+    </div>
+
+    <!-- Main viewport for three.js -->
+    <canvas class="webgl"></canvas>
+    
+    <!-- For browsers that don't support import maps-->
+    <script async src="https://unpkg.com/es-module-shims@1.6.3/dist/es-module-shims.js"></script>
+
+    <script type="importmap">
+        {
+            "imports": {
+                "jsts": "https://cdn.jsdelivr.net/npm/jsts@2.10.0/dist/jsts.min.js",
+                "three": "https://unpkg.com/three@v0.155.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@v0.155.0/examples/jsm/"
+            }
+        }
+    </script>
+
+    <!-- type must be module for imports and exports to work -->
+    <script type="module" src="./main.js"></script>
+</body>
+</html>
