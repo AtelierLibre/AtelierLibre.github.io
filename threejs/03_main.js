@@ -86,8 +86,6 @@ function onPointerMove( event ) {
   // -1 to +1 for both components
   pointer.x = ( event.clientX / window.innerWidth ) * 2 - 1;
   pointer.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
-  //console.log(pointer.x, pointer.y);
-  //render();
 };
 
 // https://stackoverflow.com/questions/4235426/how-can-i-capture-the-right-click-event-in-javascript
@@ -103,7 +101,6 @@ function onContextMenu( event ) {
   if (intersectedObjects.length) {
     intersectedObject = intersectedObjects[0].object;
     intersectedStreetID = intersectedObject.userData.street_id
-    console.log(intersectedStreetID);
 
     menu.style.left = (event.clientX - rect.left) + "px";
     menu.style.top = (event.clientY - rect.top) + "px";
@@ -118,18 +115,14 @@ function onContextMenu( event ) {
 streetTypeSelector.addEventListener("change", function(event) {
   // user selected street type
   const selectedStreetType = event.target.value;
-  // log current street type
-  console.log(streets[intersectedStreetID]['streetType']);
+
   // change street type
   streets[intersectedStreetID]['streetType'] = selectedStreetType;
-  // log new street type
-  console.log(streets[intersectedStreetID]['streetType']);
 
   // Reset the selector default value
   streetTypeSelector.selectedIndex = 0;
 
   menu.style.display = "none";
-  console.log(menu)
 
   changeBuffer();
 
