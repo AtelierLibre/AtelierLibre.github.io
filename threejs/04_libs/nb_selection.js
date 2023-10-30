@@ -11,7 +11,7 @@ export function updateSelectionMap( selectionMap, INTERSECTED, selectionSteps ) 
 
     switch (constructorName) {
       // If origin element is a polygon
-      case 'Vt': //Ct
+      case 'Ct':
         // Get the neighbouring polygons
         jstsNeighbours = GRAPH.polygonNeighbours(INTERSECTED.userData.jsts);
         // add the mesh of each neighbouring node to the selection set
@@ -22,7 +22,7 @@ export function updateSelectionMap( selectionMap, INTERSECTED, selectionSteps ) 
         break;
 
       // If origin element is a node
-      case 'Ji': //mr
+      case 'mr':
         // Get the neighbouring nodes
         jstsNeighbours = GRAPH.nodeNeighbours(INTERSECTED.userData.jsts);
         // add the mesh of each neighbouring node to the selection set
@@ -32,7 +32,7 @@ export function updateSelectionMap( selectionMap, INTERSECTED, selectionSteps ) 
         break;
 
       // If origin element is an edge
-      case 'Vr': //zr
+      case 'zr':
         // Get the neighbouring nodes
         jstsNeighbours = GRAPH.edgeNeighbours(INTERSECTED.userData.jsts);
         // add the mesh of each neighbouring node to the selection set
