@@ -38,7 +38,7 @@ let rect;
 const gui_values = {
   primaryBufferDistance: 7.5,
   secondaryBufferDistance: 3.5,
-  selectionSteps: 1, // Not zero indexed
+  selectionSteps: 0, // Not zero indexed
 };
 
 function init() {
@@ -76,7 +76,7 @@ function init() {
   const gui = new GUI();
   const selectionFolder = gui.addFolder( 'Selection' );
   selectionFolder.add(
-    gui_values, "selectionSteps", 1, 10, 1).name("Selection steps").onChange( value => {changeSelectionSteps(value)} );
+    gui_values, "selectionSteps", 0, 1, 1).name("Selection steps").onChange( value => {changeSelectionSteps(value)} );
 
   // Event Listeners
   window.addEventListener( 'resize', onWindowResize );
@@ -170,7 +170,7 @@ function render() {
       INTERSECTED = intersects[ 0 ].object;
 
       // Update the selectionMap
-      SELECTION.updateSelectionMap( selectionMap, INTERSECTED, 1 );
+      SELECTION.updateSelectionMap( selectionMap, INTERSECTED, gui_values.selectionSteps );
     }
 
   // if there aren't any intersected objects

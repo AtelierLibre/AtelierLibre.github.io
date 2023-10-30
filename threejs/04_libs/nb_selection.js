@@ -12,33 +12,39 @@ export function updateSelectionMap( selectionMap, INTERSECTED, selectionSteps ) 
     switch (constructorName) {
       // If origin element is a polygon
       case 'Ct':
-        // Get the neighbouring polygons
-        jstsNeighbours = GRAPH.polygonNeighbours(INTERSECTED.userData.jsts);
-        // add the mesh of each neighbouring node to the selection set
-        jstsNeighbours.forEach((element) => {
-            //console.log(element._userData.threeJS)
-            selectionMap.set( element._userData.threeJS, 1 )
-        });
+        if (selectionSteps == 1) {
+            // Get the neighbouring polygons
+            jstsNeighbours = GRAPH.polygonNeighbours(INTERSECTED.userData.jsts);
+            // add the mesh of each neighbouring node to the selection set
+            jstsNeighbours.forEach((element) => {
+                //console.log(element._userData.threeJS)
+                selectionMap.set( element._userData.threeJS, 1 )
+            });
+        };
         break;
 
       // If origin element is a node
       case 'mr':
-        // Get the neighbouring nodes
-        jstsNeighbours = GRAPH.nodeNeighbours(INTERSECTED.userData.jsts);
-        // add the mesh of each neighbouring node to the selection set
-        jstsNeighbours.forEach((element) => {
-            selectionMap.set( element._userData.threeJS, 1 )
-        });
+        if (selectionSteps == 1) {
+            // Get the neighbouring nodes
+            jstsNeighbours = GRAPH.nodeNeighbours(INTERSECTED.userData.jsts);
+            // add the mesh of each neighbouring node to the selection set
+            jstsNeighbours.forEach((element) => {
+                selectionMap.set( element._userData.threeJS, 1 )
+            });
+        };
         break;
 
       // If origin element is an edge
       case 'zr':
-        // Get the neighbouring nodes
-        jstsNeighbours = GRAPH.edgeNeighbours(INTERSECTED.userData.jsts);
-        // add the mesh of each neighbouring node to the selection set
-        jstsNeighbours.forEach((element) => {
-            selectionMap.set( element._line._userData.threeJS, 1 )
-        });
+        if (selectionSteps == 1) {
+            // Get the neighbouring nodes
+            jstsNeighbours = GRAPH.edgeNeighbours(INTERSECTED.userData.jsts);
+            // add the mesh of each neighbouring node to the selection set
+            jstsNeighbours.forEach((element) => {
+                selectionMap.set( element._line._userData.threeJS, 1 )
+            });
+        };
         break;
 
       default:
