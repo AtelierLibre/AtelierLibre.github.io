@@ -5,7 +5,7 @@
  */
 export async function readGeoJSON_LineStringArray (geoJSONfile) {
     const reader = new jsts.io.GeoJSONReader();
-    const t_ = fetch('..\\00_Libraries\\test.geojson')
+    const t_ = fetch(geoJSONfile)
       .then(response => response.json())
       .then(data => data.features);
     const res = await t_;
