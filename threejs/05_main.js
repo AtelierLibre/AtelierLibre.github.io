@@ -2,14 +2,9 @@ import * as THREE from 'three';
 import 'jsts';
 import * as JSTS_3JS from 'nb_jsts_3js';
 import * as MATERIALS from 'nb_materials';
-import { GUI } from 'three/addons/libs/lil-gui.module.min.js';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { TransformControls } from 'three/addons/controls/TransformControls.js';
-/*
-import { GUI } from 'lil-gui';
-import { OrbitControls } from 'orbitcontrols';
-import { TransformControls } from 'transformcontrols';
-*/
+
 // THREEJS objects //
 const canvas = document.querySelector('canvas.webgl');
 let camera, scene, renderer;
