@@ -11,7 +11,7 @@ import { OrbitControls } from 'orbitcontrols';
 import { TransformControls } from 'transformcontrols';
 */
 // THREEJS objects //
-let container;
+const canvas = document.querySelector('canvas.webgl');
 let camera, scene, renderer;
 let transformControl;
 // Groups
@@ -51,7 +51,6 @@ const Angle = jsts.algorithm.Angle;
 // Run the initialise function
 initialise();
 function initialise() {
-	container = document.getElementById( 'container' );
 	scene = new THREE.Scene();
 	scene.background = new THREE.Color( 0xf0f0f0 );
 	// Camera
@@ -98,11 +97,9 @@ function initialise() {
 	addGridHelper( scene )
 	// Renderer
 	function createRenderer () {
-		renderer = new THREE.WebGLRenderer( { antialias: true } );
+        renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
 		renderer.setPixelRatio( window.devicePixelRatio );
 		renderer.setSize( window.innerWidth, window.innerHeight );
-		renderer.shadowMap.enabled = true;
-		container.appendChild( renderer.domElement );
 	}
 	createRenderer()
 	// OrbitControls
