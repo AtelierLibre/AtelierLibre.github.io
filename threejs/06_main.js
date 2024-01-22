@@ -102,9 +102,15 @@ function onWindowResize() {
     renderer.setSize( window.innerWidth, window.innerHeight );
 };
 
-function onMouseDown() {
+function onMouseDown( event ) {
     mouseDown = true;
     mouseMoved = false;
+
+    // try updating this here as well for touch device where
+    // mouseMove may not have happened before the touch event
+    // calculate pointer position in normalized device coordinates (-1 to +1)
+    pointer.x = ( event.clientX / canvasRef.clientWidth ) * 2 - 1;
+    pointer.y = - ( event.clientY / canvasRef.clientHeight ) * 2 + 1;
 
     if ( rayVertexIntersection ) {
         controls.enabled = false;//! event.value;
