@@ -5,7 +5,7 @@ import { Graph } from './06_libs/graph.js';
 
 // Scene, camera, renderer
 //////////////////////////
-const canvasRef = document.querySelector('canvas.threejsCanvas');
+const canvasRef = document.querySelector('canvas.webgl');
 let scene, camera, renderer, controls;
 let sphereInter, raycaster, pointer, cube, plane;
 let rayPlaneIntersection = new THREE.Vector3();
