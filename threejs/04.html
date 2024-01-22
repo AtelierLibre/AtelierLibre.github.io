@@ -2,20 +2,15 @@
 layout: threejs_default
 title: three.js experiment 04
 ---
-
-    <div id="menu" style="position: absolute; z-index: 2; left: 1024px; top: 465px; display: none;">
-        Select
-        <br>
-        <label for="streetTypeSelector">Street type:</label>
-        <select id="streetTypeSelector" name="street_sel_name"><!-- onchange="this.form.submit();"> -->
-            <option value="" selected disabled hidden>Choose here</option>
-            <option value="Primary">Primary</option>
-            <option value="Secondary">Secondary</option>
-        </select>
-    </div>
-
     <!-- Main viewport for three.js -->
     <canvas class="webgl"></canvas>
+
+    <div id="info">
+        Test 04<br/>
+        Loads a GeoJSON of street centre lines<br/>
+        Converts to a topology of linked junctions, street sections and blocks<br/>
+        Setting "Selection steps" to 1 highlights neighbours as well
+    </div>
     
     <!-- For browsers that don't support import maps-->
     <script async src="https://unpkg.com/es-module-shims@1.6.3/dist/es-module-shims.js"></script>

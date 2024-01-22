@@ -34,7 +34,7 @@ function init() {
 
     // Scene
     scene = new THREE.Scene();
-    scene.background = new THREE.Color( 0, 0, 0 ); // Black background
+    scene.background = new THREE.Color( 0x232023 );
 
     // Camera
     camera = new THREE.PerspectiveCamera(
@@ -121,7 +121,7 @@ function onMouseMove( event ) {
     pointer.y = - ( event.clientY / canvasRef.clientHeight ) * 2 + 1;
 
     if (mouseDown && (vID1 !== null)) {
-        console.log('show a temporary edge...')
+        //console.log('show a temporary edge...')
     }
 };
 

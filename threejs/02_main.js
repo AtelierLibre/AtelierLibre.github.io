@@ -32,6 +32,7 @@ function init() {
 
   // Create a scene
   scene = new THREE.Scene();
+  scene.background = new THREE.Color( 0x232023 );
 
   // Axes Helper
   const axesHelper = new THREE.AxesHelper( 5 );

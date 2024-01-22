@@ -33,6 +33,7 @@ const netBlockMaterial = new THREE.MeshStandardMaterial( { color: 0x556B2F, side
 function init() {
   // Create a scene
   scene = new THREE.Scene();
+  scene.background = new THREE.Color( 0x232023 );
 
   // Create lights
   const hemiLight = new THREE.HemisphereLight( 0xffffff, 0x8d8d8d, 3 );

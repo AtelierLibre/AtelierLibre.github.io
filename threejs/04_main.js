@@ -45,6 +45,7 @@ function init() {
   
   // Create a scene
   scene = new THREE.Scene();
+  scene.background = new THREE.Color( 0x232023 );
 
   // Add lights
 	scene.add( LIGHTS.hemiLight );

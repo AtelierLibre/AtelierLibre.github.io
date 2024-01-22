@@ -47,7 +47,7 @@ const Angle = jsts.algorithm.Angle;
 initialise();
 function initialise() {
 	scene = new THREE.Scene();
-	scene.background = new THREE.Color( 0xf0f0f0 );
+	scene.background = new THREE.Color( 0x232023 );
 	// Camera
 	function addCamera( scene ) {
 		camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 1, 10000 );
