@@ -2,6 +2,13 @@ body
 {
     margin: 0;
     position: relative;
+    background-color: #000;
+	color: #fff;
+	font-family: Monospace;
+	font-size: 13px;
+	line-height: 24px;
+    overflow: hidden; /* Ensures no scrolling */
+	overscroll-behavior: none;
 }
 
 button
@@ -17,6 +24,8 @@ canvas.webgl
     position: absolute;
     left: 0;
     top: 0;
+    width: 100%;
+    height: 100%;
     z-index: 0;
 }
 
