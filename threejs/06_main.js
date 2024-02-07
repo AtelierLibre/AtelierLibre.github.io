@@ -7,14 +7,14 @@ import { Graph } from './06_libs/graph.js';
 //////////////////////////
 const canvasRef = document.querySelector('canvas.webgl');
 let scene, camera, renderer, controls;
-let sphereInter, raycaster, pointer, cube, plane;
+let sphereInter, raycaster, pointer, plane;
 let rayPlaneIntersection = new THREE.Vector3();
 let rayVertexIntersection;
 let vID1, vID2;
 let rayIntersectedObjects;
 let intersectedObject = null;
-let mouseDown = false;
-let mouseMoved = false;
+let pointerDown = false;
+let pointerMoved = false;
 const bfsSettings = {
     steps:5,
 };
@@ -89,9 +89,10 @@ function init() {
     scene.add( graphObjectsGroup );
 
     window.addEventListener( 'resize', onWindowResize );
-    window.addEventListener( 'mousedown', onMouseDown );
-    window.addEventListener( 'mousemove', onMouseMove );
-    window.addEventListener( 'mouseup', onMouseUp );
+
+    canvasRef.addEventListener( 'pointerdown', onPointerDown );
+    canvasRef.addEventListener( 'pointermove', onPointerMove );
+    canvasRef.addEventListener( 'pointerup', onPointerUp );
 
     render();
 };
@@ -102,9 +103,9 @@ function onWindowResize() {
     renderer.setSize( window.innerWidth, window.innerHeight );
 };
 
-function onMouseDown( event ) {
-    mouseDown = true;
-    mouseMoved = false;
+function onPointerDown( event ) {
+    pointerDown = true;
+    pointerMoved = false;
 
     // try updating this here as well for touch device where
     // mouseMove may not have happened before the touch event
@@ -118,21 +119,21 @@ function onMouseDown( event ) {
     }
 }
 
-function onMouseMove( event ) {
+function onPointerMove( event ) {
 
-    mouseMoved = true;
+    pointerMoved = true;
 
     // calculate pointer position in normalized device coordinates (-1 to +1)
     pointer.x = ( event.clientX / canvasRef.clientWidth ) * 2 - 1;
     pointer.y = - ( event.clientY / canvasRef.clientHeight ) * 2 + 1;
 
-    if (mouseDown && (vID1 !== null)) {
+    if (pointerDown && (vID1 !== null)) {
         //console.log('show a temporary edge...')
     }
 };
 
-function onMouseUp ( event ) {
-    if (mouseDown && !mouseMoved) {
+function onPointerUp ( event ) {
+    if (pointerDown && !pointerMoved) {
         if ( !rayVertexIntersection ) {
             graph.addVertex( rayPlaneIntersection );
         } else {
@@ -140,7 +141,7 @@ function onMouseUp ( event ) {
                 graph.traverseGraph( rayIntersectedObjects[0].object.userData['vID'], bfsSettings.steps )
             //)
         }
-    } else if (mouseDown && mouseMoved) {
+    } else if (pointerDown && pointerMoved) {
         if ( rayVertexIntersection ) {
             vID2 = rayIntersectedObjects[0].object.userData['vID'];
             graph.addEdge( vID1,vID2 );
@@ -148,8 +149,8 @@ function onMouseUp ( event ) {
     }
 
     // Reset the flags
-    mouseDown = false;
-    mouseMoved = false;
+    pointerDown = false;
+    pointerMoved = false;
     controls.enabled = true;
     vID1 = null;
     vID2 = null;
