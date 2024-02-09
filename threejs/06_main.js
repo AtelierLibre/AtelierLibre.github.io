@@ -175,7 +175,6 @@ function onPointerUp ( event ) {
         if ( rayIntersectedGeometries.length > 0 ) {
             vID2 = rayIntersectedGeometries[0].object.userData['ID'];
             graph.addEdge( vID1,vID2 );
-            console.log(graph)
         }
     };
     // Reset the flags
