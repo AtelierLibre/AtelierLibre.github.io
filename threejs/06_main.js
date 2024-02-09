@@ -77,6 +77,9 @@ function init() {
     plane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0); // Adjust the normal and constant as needed
     pointer = new THREE.Vector2();
     raycaster = new THREE.Raycaster();
+    raycaster.params.Line.threshold = 0.3;
+    raycaster.linePrecision = 0.01;
+
     // Sphere to show where pointer intersects with object
     const sphereInterGeometry = new THREE.SphereGeometry( 0.1 );
     const sphereInterMaterial = new THREE.MeshBasicMaterial( { color: 0xffffff } );
@@ -89,10 +92,9 @@ function init() {
     scene.add( graphObjectsGroup );
 
     window.addEventListener( 'resize', onWindowResize );
-
-    canvasRef.addEventListener( 'pointerdown', onPointerDown );
-    canvasRef.addEventListener( 'pointermove', onPointerMove );
-    canvasRef.addEventListener( 'pointerup', onPointerUp );
+    canvasRef.addEventListener( 'pointerdown', onPointerDown, false );
+    canvasRef.addEventListener( 'pointermove', onPointerMove, false );
+    canvasRef.addEventListener( 'pointerup', onPointerUp, false );
     canvasRef.style.touchAction = 'none';
 
     render();
@@ -105,6 +107,9 @@ function onWindowResize() {
 };
 
 function onPointerDown( event ) {
+    event.preventDefault(); // Trying this
+    event.stopPropagation(); // and this
+
     pointerDown = true;
     pointerMoved = false;
 
@@ -129,6 +134,8 @@ function onPointerMove( event ) {
     };
 
     pointerMoved = true;
+    event.preventDefault(); // Trying this
+    event.stopPropagation(); // and this
 
     // calculate pointer position in normalized device coordinates (-1 to +1)
     pointer.x = ( event.clientX / canvasRef.clientWidth ) * 2 - 1;
