@@ -21,13 +21,7 @@ const bfsSettings = {
 const vertexOriginalMaterial = new THREE.MeshBasicMaterial({color: 0x655967});
 const vertexHoverMaterial = new THREE.MeshBasicMaterial({color: 0xFFFF00});
 
-const vertexGroup = new THREE.Group();
-vertexGroup.name = "vertexGroup";
-const edgeGroup = new THREE.Group();
-edgeGroup.name = "edgeGroup";
 let graphObjectsGroup = new THREE.Group(); // ThreeJS Group for vertices and edges, gets added to scene
-graphObjectsGroup.add( vertexGroup );
-graphObjectsGroup.add( edgeGroup );
 
 let graph; // The graph object
 
@@ -90,7 +84,7 @@ function init() {
     scene.add( sphereInter );
 
     // Create a Graph and add its geometries to the scene
-    graph = new Graph();
+    graph = new Graph( graphObjectsGroup );
     scene.add( graph.vertexGroup );
     scene.add( graph.edgeGroup);
 
