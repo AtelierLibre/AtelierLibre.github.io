@@ -108,7 +108,6 @@ let initialPointerPosition = { x: null, y: null };
 
 function onPointerDown( event ) {
 
-    console.log('pointerDown!')
     event.preventDefault(); // Trying this
     event.stopPropagation(); // and this
 
@@ -124,9 +123,7 @@ function onPointerDown( event ) {
     raycaster.ray.intersectPlane( plane, rayPlaneIntersection );
 
     // intersect the raycaster with the plane and the geometries
-    rayIntersectedGeometries = raycaster.intersectObjects(
-        [...graph.vertexGroup.children, ...graph.edgeGroup.children]
-    );
+    rayIntersectedGeometries = raycaster.intersectObjects( graph.vertexGroup.children );
 
     if ( rayIntersectedGeometries.length > 0 ) {
         controls.enabled = false;
@@ -150,7 +147,6 @@ function onPointerMove( event ) {
     }
 
     pointerMoved = true;
-    console.log('pointerMoved')
     event.preventDefault(); // Trying this
     event.stopPropagation(); // and this
 
@@ -162,28 +158,12 @@ function onPointerMove( event ) {
     raycaster.setFromCamera( pointer, camera );
     raycaster.ray.intersectPlane( plane, rayPlaneIntersection );
 
-    // When dragging from one point to another you only want to find points
-    if ( pointerDown ) {
-        rayIntersectedGeometries = raycaster.intersectObjects(
-            graph.vertexGroup.children
-        )
-    // When just mousing around you want to find all geometries
-    } else {
-        rayIntersectedGeometries = raycaster.intersectObjects(
-            [...graph.vertexGroup.children, ...graph.edgeGroup.children]
-        )
-    };
-
-    if (pointerDown && (vID1 !== null)) {
-        console.log('show a temporary edge...') // future update
-    }
+    rayIntersectedGeometries = raycaster.intersectObjects( graph.vertexGroup.children );
 };
 
 function onPointerUp ( event ) {
-    console.log('pointerUp!')
 
     if (pointerDown && !pointerMoved) {
-        console.log('here')
         if ( !rayIntersectedGeometries.length > 0 ) {
             graph.addVertex( rayPlaneIntersection );
         } else {
