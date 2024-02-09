@@ -93,6 +93,7 @@ function init() {
     canvasRef.addEventListener( 'pointerdown', onPointerDown );
     canvasRef.addEventListener( 'pointermove', onPointerMove );
     canvasRef.addEventListener( 'pointerup', onPointerUp );
+    canvasRef.style.touchAction = 'none';
 
     render();
 };
