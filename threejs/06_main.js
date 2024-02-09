@@ -9,15 +9,17 @@ const canvasRef = document.querySelector('canvas.webgl');
 let scene, camera, renderer, controls;
 let sphereInter, raycaster, pointer, plane;
 let rayPlaneIntersection = new THREE.Vector3();
-let rayVertexIntersection;
 let vID1, vID2;
-let rayIntersectedObjects;
-let intersectedObject = null;
+let rayIntersectedGeometries = [];
+let rayIntersectedGeometry = null;
 let pointerDown = false;
 let pointerMoved = false;
 const bfsSettings = {
     steps:5,
 };
+
+const vertexOriginalMaterial = new THREE.MeshBasicMaterial({color: 0x655967});
+const vertexHoverMaterial = new THREE.MeshBasicMaterial({color: 0xFFFF00});
 
 const vertexGroup = new THREE.Group();
 vertexGroup.name = "vertexGroup";
@@ -87,13 +89,14 @@ function init() {
     sphereInter.visible = false;
     scene.add( sphereInter );
 
-    // Graph
-    graph = new Graph( graphObjectsGroup );
-    scene.add( graphObjectsGroup );
+    // Create a Graph and add its geometries to the scene
+    graph = new Graph();
+    scene.add( graph.vertexGroup );
+    scene.add( graph.edgeGroup);
 
     window.addEventListener( 'resize', onWindowResize );
-    canvasRef.addEventListener( 'pointerdown', onPointerDown, false );
-    canvasRef.addEventListener( 'pointermove', onPointerMove, false );
+    canvasRef.addEventListener( 'pointerdown', onPointerDown, { passive: false } );
+    canvasRef.addEventListener( 'pointermove', onPointerMove, { passive: false } );
     canvasRef.addEventListener( 'pointerup', onPointerUp, false );
     canvasRef.style.touchAction = 'none';
 
@@ -109,27 +112,39 @@ function onWindowResize() {
 let initialPointerPosition = { x: null, y: null };
 
 function onPointerDown( event ) {
+
+    console.log('pointerDown!')
     event.preventDefault(); // Trying this
     event.stopPropagation(); // and this
 
     pointerDown = true;
     pointerMoved = false;
 
-    // try updating this here as well for touch device where
-    // mouseMove may not have happened before the touch event
     // calculate pointer position in normalized device coordinates (-1 to +1)
     pointer.x = ( event.clientX / canvasRef.clientWidth ) * 2 - 1;
     pointer.y = - ( event.clientY / canvasRef.clientHeight ) * 2 + 1;
 
-    if ( rayVertexIntersection ) {
-        controls.enabled = false;//! event.value;
-        vID1 = rayIntersectedObjects[0].object.userData['vID'];
-    };
+    // update the raycaster
+    raycaster.setFromCamera( pointer, camera );
+    raycaster.ray.intersectPlane( plane, rayPlaneIntersection );
+
+    // intersect the raycaster with the plane and the geometries
+    rayIntersectedGeometries = raycaster.intersectObjects(
+        [...graph.vertexGroup.children, ...graph.edgeGroup.children]
+    );
+
+    if ( rayIntersectedGeometries.length > 0 ) {
+        controls.enabled = false;
+        vID1 = rayIntersectedGeometries[0].object.userData['ID'];
+    } else {
+        controls.enabled = true;
+    }
+    controls.update()
 
     // Store the initial pointer position to check for significant movement
     initialPointerPosition.x = event.clientX;
     initialPointerPosition.y = event.clientY;
-}
+};
 
 function onPointerMove( event ) {
     // Check if the pointer has moved significantly
@@ -137,9 +152,10 @@ function onPointerMove( event ) {
     if (Math.abs(event.clientX - initialPointerPosition.x) < moveThreshold &&
         Math.abs(event.clientY - initialPointerPosition.y) < moveThreshold) {
         return;  // Ignore minor movements
-    };
+    }
 
     pointerMoved = true;
+    console.log('pointerMoved')
     event.preventDefault(); // Trying this
     event.stopPropagation(); // and this
 
@@ -147,90 +163,83 @@ function onPointerMove( event ) {
     pointer.x = ( event.clientX / canvasRef.clientWidth ) * 2 - 1;
     pointer.y = - ( event.clientY / canvasRef.clientHeight ) * 2 + 1;
 
+    // update the raycaster
+    raycaster.setFromCamera( pointer, camera );
+    raycaster.ray.intersectPlane( plane, rayPlaneIntersection );
+
+    // When dragging from one point to another you only want to find points
+    if ( pointerDown ) {
+        rayIntersectedGeometries = raycaster.intersectObjects(
+            graph.vertexGroup.children
+        )
+    // When just mousing around you want to find all geometries
+    } else {
+        rayIntersectedGeometries = raycaster.intersectObjects(
+            [...graph.vertexGroup.children, ...graph.edgeGroup.children]
+        )
+    };
+
     if (pointerDown && (vID1 !== null)) {
-        //console.log('show a temporary edge...')
+        console.log('show a temporary edge...') // future update
     }
 };
 
 function onPointerUp ( event ) {
+    console.log('pointerUp!')
+
     if (pointerDown && !pointerMoved) {
-        if ( !rayVertexIntersection ) {
+        console.log('here')
+        if ( !rayIntersectedGeometries.length > 0 ) {
             graph.addVertex( rayPlaneIntersection );
         } else {
-            //console.log(
-                graph.traverseGraph( rayIntersectedObjects[0].object.userData['vID'], bfsSettings.steps )
-            //)
+            traverseGraph(
+                graph,
+                rayIntersectedGeometries[0].object.userData['ID'],
+                traversalSettings )
         }
     } else if (pointerDown && pointerMoved) {
-        if ( rayVertexIntersection ) {
-            vID2 = rayIntersectedObjects[0].object.userData['vID'];
+        if ( rayIntersectedGeometries.length > 0 ) {
+            vID2 = rayIntersectedGeometries[0].object.userData['ID'];
             graph.addEdge( vID1,vID2 );
+            console.log(graph)
         }
-    }
-
+    };
     // Reset the flags
     pointerDown = false;
     pointerMoved = false;
     controls.enabled = true;
     vID1 = null;
     vID2 = null;
-}
-
-const vertexOriginalMaterial = new THREE.MeshBasicMaterial({color: 0x655967});
-const vertexHoverMaterial = new THREE.MeshBasicMaterial({color: 0xFFFF00});
+};
 
 // Render
 /////////
 function render() {
-
-    // update the raycaster
-    raycaster.setFromCamera( pointer, camera );
-
-    // intersect raycaster with plane
-    raycaster.ray.intersectPlane( plane, rayPlaneIntersection );
-    if ( rayPlaneIntersection !== null ) {
-        sphereInter.visible = true;
-        sphereInter.position.copy( rayPlaneIntersection );
-    } else {
-        sphereInter.visible = false;
-    };
-
-    // intersect raycaster with graph objects
-    rayIntersectedObjects = raycaster.intersectObjects(
-        vertexGroup.children
-        );
-
-    // if there are intersected objects
-    if ( rayIntersectedObjects.length > 0 ) {
-        rayVertexIntersection = true;
-        // if intersectedObject is different from the current intersected object
-        if ( intersectedObject != rayIntersectedObjects[0].object ) {
-            // reset the current (old) intersectedObject's color
-            if ( intersectedObject ) {
-                intersectedObject.material = vertexOriginalMaterial;
+    if ( rayIntersectedGeometries.length > 0 ) {
+        // if rayIntersectedGeometry differs from the geometry intersected by the ray
+        if ( rayIntersectedGeometry != rayIntersectedGeometries[0].object ) {
+            // and isn't null
+            if ( rayIntersectedGeometry ) {
+                // reset its color
+                rayIntersectedGeometry.material = vertexOriginalMaterial;
             }
-
-            // Update intersectedObject to the new object & change its color
-            intersectedObject = rayIntersectedObjects[0].object;
-            intersectedObject.material = vertexHoverMaterial;
+            // Update rayIntersectedGeometry to the new geometry & change its color
+            rayIntersectedGeometry = rayIntersectedGeometries[0].object;
+            rayIntersectedGeometry.material = vertexHoverMaterial;
         }
-
-    // if the ray doesn't intersect any objects
     } else {
-        rayVertexIntersection = false;
-        // If intersectedObject still references an object, reset the selection map materials
-        if ( intersectedObject ) {
-            // reset the current (old) intersectedObject's color
-            intersectedObject.material = vertexOriginalMaterial;//intersectedObject.userData['originalColor'];
+    // if the ray doesn't intersect any objects but rayIntersectedGeometry still references an object
+        if ( rayIntersectedGeometry ) {
+            // reset its color
+            rayIntersectedGeometry.material = vertexOriginalMaterial;
         };
-        // Set intersectedObject to reference null
-        intersectedObject = null;
-
+        rayIntersectedGeometry = null;
     };
 
     controls.update()
 
     renderer.render( scene, camera );
+    labelRenderer.render(scene, camera);
     requestAnimationFrame(render);
 };
 
