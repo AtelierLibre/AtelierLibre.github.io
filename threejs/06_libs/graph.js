@@ -29,7 +29,7 @@ export class Vertex {
         this.neighbours = [];
         this.mesh = vertexMesh.clone();
         this.mesh.position.copy( rayPlaneIntersection );
-        this.mesh.userData['vID'] = this.vID;
+        this.mesh.userData['ID'] = this.vID;
         vertexGroup.add( this.mesh )
     }
 }
