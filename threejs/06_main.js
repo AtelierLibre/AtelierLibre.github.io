@@ -233,7 +233,6 @@ function render() {
     controls.update()
 
     renderer.render( scene, camera );
-    labelRenderer.render(scene, camera);
     requestAnimationFrame(render);
 };
 
