@@ -86,7 +86,8 @@ function init() {
     // Create a Graph and add its geometries to the scene
     graph = new Graph( graphObjectsGroup );
     scene.add( graph.vertexGroup );
-    scene.add( graph.edgeGroup);
+    scene.add( graph.edgeGroup );
+    scene.add( graph.bfsSphereGroup );
 
     window.addEventListener( 'resize', onWindowResize );
     canvasRef.addEventListener( 'pointerdown', onPointerDown, { passive: false } );
