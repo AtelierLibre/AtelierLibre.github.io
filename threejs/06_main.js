@@ -120,6 +120,12 @@ function onPointerDown( event ) {
 }
 
 function onPointerMove( event ) {
+    // Check if the pointer has moved significantly
+    const moveThreshold = 10;  // Adjust this value as needed
+    if (Math.abs(event.clientX - initialPointerPosition.x) < moveThreshold &&
+        Math.abs(event.clientY - initialPointerPosition.y) < moveThreshold) {
+        return;  // Ignore minor movements
+    };
 
     pointerMoved = true;
 
