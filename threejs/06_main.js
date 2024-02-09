@@ -186,10 +186,9 @@ function onPointerUp ( event ) {
         if ( !rayIntersectedGeometries.length > 0 ) {
             graph.addVertex( rayPlaneIntersection );
         } else {
-            traverseGraph(
-                graph,
+            graph.traverseGraph(
                 rayIntersectedGeometries[0].object.userData['ID'],
-                traversalSettings )
+                bfsSettings.steps )
         }
     } else if (pointerDown && pointerMoved) {
         if ( rayIntersectedGeometries.length > 0 ) {
