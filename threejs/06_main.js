@@ -106,6 +106,8 @@ function onWindowResize() {
     renderer.setSize( window.innerWidth, window.innerHeight );
 };
 
+let initialPointerPosition = { x: null, y: null };
+
 function onPointerDown( event ) {
     event.preventDefault(); // Trying this
     event.stopPropagation(); // and this
@@ -122,7 +124,11 @@ function onPointerDown( event ) {
     if ( rayVertexIntersection ) {
         controls.enabled = false;//! event.value;
         vID1 = rayIntersectedObjects[0].object.userData['vID'];
-    }
+    };
+
+    // Store the initial pointer position to check for significant movement
+    initialPointerPosition.x = event.clientX;
+    initialPointerPosition.y = event.clientY;
 }
 
 function onPointerMove( event ) {
