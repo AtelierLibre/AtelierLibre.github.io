@@ -39,9 +39,11 @@ export class Graph {
         this.adjacencyList = {};
 
         this.graphObjectsGroup = graphObjectsGroup;
-        this.vertexGroup = graphObjectsGroup.getObjectByName( "vertexGroup" );
+        // vertexGroup
+        this.vertexGroup = new Group();
         this.vertexGroup.name = "vertexGroup";
-        this.edgeGroup = graphObjectsGroup.getObjectByName( "edgeGroup" );
+        // edgeGroup
+        this.edgeGroup = new Group();
         this.edgeGroup.name = "edgeGroup";        
 
         this.bfsSphereGroup = new Group();
