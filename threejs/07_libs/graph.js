@@ -174,26 +174,6 @@ export class Graph {
                     this.edges[eID]['neighbours_via'][newEdgeID] = vIDB;
                 }
 
-                // Set angular distance
-                //for (let vID of this.vertices[vID2]['neighbours']) {
-                //    //calculateBearingChange2D(A, B, C)
-                //    const bearingChange = calculateBearingChange2D(
-                //        this.vertices[vID1].mesh.position, 
-                //        this.vertices[vID2].mesh.position, 
-                //        this.vertices[vID].mesh.position 
-                //    );
-                //    console.log( 'bearingChange:', bearingChange );
-                //};
-                //for (let vID of this.vertices[vID1]['neighbours']) {
-                //    //calculateBearingChange2D(A, B, C)
-                //    const bearingChange = calculateBearingChange2D(
-                //        this.vertices[vID2].mesh.position, 
-                //        this.vertices[vID1].mesh.position, 
-                //        this.vertices[vID].mesh.position 
-                //    );
-                //    console.log( 'bearingChange:', bearingChange );
-                //}
-
                 // Creating an edge is equivalent to making two vertices neighbours of each other
                 this.vertices[vID1]['neighbours'].push( vID2 );
                 this.vertices[vID2]['neighbours'].push( vID1 );

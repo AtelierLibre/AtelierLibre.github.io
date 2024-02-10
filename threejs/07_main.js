@@ -170,7 +170,6 @@ function generateResultMaterials(value) {
 };
 
 function traverseGraph( graph, start_id, traversalSettings ) {
-    console.log(traversalSettings)
     // Reset result
     resultGroup.children.length = 0;
     let result;
@@ -241,9 +240,8 @@ let initialPointerPosition = { x: null, y: null };
 
 function onPointerDown( event ) {
 
-    console.log('pointerDown!')
-    event.preventDefault(); // Trying this
-    event.stopPropagation(); // and this
+    event.preventDefault();
+    event.stopPropagation();
 
     pointerDown = true;
     pointerMoved = false;
@@ -283,9 +281,9 @@ function onPointerMove( event ) {
     }
 
     pointerMoved = true;
-    console.log('pointerMoved')
-    event.preventDefault(); // Trying this
-    event.stopPropagation(); // and this
+
+    event.preventDefault();
+    event.stopPropagation();
 
     // calculate pointer position in normalized device coordinates (-1 to +1)
     pointer.x = ( event.clientX / canvasRef.clientWidth ) * 2 - 1;
@@ -307,16 +305,11 @@ function onPointerMove( event ) {
         )
     };
 
-    if (pointerDown && (vID1 !== null)) {
-        console.log('show a temporary edge...') // future update
-    }
 };
 
 function onPointerUp ( event ) {
-    console.log('pointerUp!')
 
     if (pointerDown && !pointerMoved) {
-        console.log('here')
         if ( !rayIntersectedGeometries.length > 0 ) {
             graph.addVertex( rayPlaneIntersection );
         } else {
@@ -329,7 +322,6 @@ function onPointerUp ( event ) {
         if ( rayIntersectedGeometries.length > 0 ) {
             vID2 = rayIntersectedGeometries[0].object.userData['ID'];
             graph.addEdge( vID1,vID2 );
-            console.log(graph)
         }
     };
     // Reset the flags
