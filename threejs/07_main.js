@@ -2,14 +2,14 @@ import * as THREE from 'three';
 import { CSS2DRenderer } from 'three/addons/renderers/CSS2DRenderer.js';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { GUI } from 'three/addons/libs/lil-gui.module.min.js';
-import { Graph } from './graph.js';
+import { Graph } from './07_libs/graph.js';
 import { Lut } from 'three/addons/math/Lut.js';
-import { bfs_depth_limit } from './algorithms/bfs_depth_limit.js';
-import { edge_bfs_depth_limit } from './algorithms/edge_bfs_depth_limit.js';
-import { dijkstra_single_source_limit } from './algorithms/dijkstra_single_source_limit.js';
-import { edge_dijkstra_single_source_limit } from './algorithms/edge_dijkstra_single_source_limit.js';
-import { edge_angular_dijkstra_single_source_limit } from './algorithms/edge_angular_dijkstra_single_source_limit.js';
-import { edge_nou_angular_dijkstra_single_source_limit } from './algorithms/edge_nou_angular_dijkstra_single_source_limit.js';
+import { bfs_depth_limit } from './07_libs/algorithms/bfs_depth_limit.js';
+import { edge_bfs_depth_limit } from './07_libs/algorithms/edge_bfs_depth_limit.js';
+import { dijkstra_single_source_limit } from './07_libs/algorithms/dijkstra_single_source_limit.js';
+import { edge_dijkstra_single_source_limit } from './07_libs/algorithms/edge_dijkstra_single_source_limit.js';
+import { edge_angular_dijkstra_single_source_limit } from './07_libs/algorithms/edge_angular_dijkstra_single_source_limit.js';
+import { edge_nou_angular_dijkstra_single_source_limit } from './07_libs/algorithms/edge_nou_angular_dijkstra_single_source_limit.js';
 
 // Scene, camera, renderer
 //////////////////////////
