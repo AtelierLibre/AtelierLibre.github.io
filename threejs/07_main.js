@@ -144,7 +144,7 @@ function init() {
 ////////////////////
 ///
 const resultSphereMesh = new THREE.Mesh(
-    new THREE.SphereGeometry( 0.125, 16, 16 ),
+    new THREE.SphereGeometry( 0.16, 16, 16 ),
     new THREE.MeshBasicMaterial()
 );
 
