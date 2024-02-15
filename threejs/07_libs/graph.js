@@ -2,7 +2,7 @@ import { BufferGeometry, Group, Line, LineBasicMaterial, SphereGeometry, MeshBas
 import { CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
 //
 const vertexMesh = new Mesh(
-    new SphereGeometry( 0.1, 16, 16 ),
+    new SphereGeometry( 0.15, 16, 16 ), // radius, widthSegments, heightSegments
     new MeshBasicMaterial({ color:0x655967 })
 );
 vertexMesh.userData['basicColorHex'] = 0x655967;
