@@ -7,7 +7,7 @@ import { LineGeometry } from 'three/addons/lines/LineGeometry.js';
 const vertexBasicColorHex = 0x655967;
 const vertexHoverColorHex = 0xFFFFFF;
 const edgeBasicColorHex = 0x989789;
-const edgeLineWidth = 1;
+const edgeLineWidth = 0.1;
 
 const vertexMesh = new Mesh(
     new SphereGeometry( 0.1, 16, 16 ),
