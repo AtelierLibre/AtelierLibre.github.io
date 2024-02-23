@@ -7,7 +7,7 @@ import { LineGeometry } from 'three/addons/lines/LineGeometry.js';
 const vertexBasicColorHex = 0x655967;
 const vertexHoverColorHex = 0xFFFFFF;
 const edgeBasicColorHex = 0x989789;
-const edgeLineWidth = 4;
+const edgeLineWidth = 1;
 
 const vertexMesh = new Mesh(
     new SphereGeometry( 0.1, 16, 16 ),
@@ -87,6 +87,7 @@ export class Graph {
 
                 const line = new Line2( lineGeometry, lineMaterial );
                 line.computeLineDistances();
+                line.scale.set( 1, 1, 1 );
                 this.edgeGroup.add(line);
             };
         };
