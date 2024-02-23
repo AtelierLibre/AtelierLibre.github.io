@@ -1,5 +1,8 @@
 import { BufferGeometry, Color, Group, Line, LineBasicMaterial, SphereGeometry, MeshBasicMaterial, Mesh} from 'three';
 import { Lut } from 'three/addons/math/Lut.js';
+import { Line2 } from 'three/addons/lines/Line2.js';
+import { LineMaterial } from 'three/addons/lines/LineMaterial.js';
+import { LineGeometry } from 'three/addons/lines/LineGeometry.js';
 
 const vertexBasicColorHex = 0x655967;
 const vertexHoverColorHex = 0xFFFFFF;
