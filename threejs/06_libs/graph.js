@@ -69,16 +69,24 @@ export class Graph {
                 this.adjacencyList[vID1]['neighbours'].push( vID2 );
                 this.adjacencyList[vID2]['neighbours'].push( vID1 );
 
-                // Add representative line to scene
-                const lineGeometry = new BufferGeometry();
-                lineGeometry.setFromPoints ( 
-                    [this.adjacencyList[ vID1 ].mesh.position, this.adjacencyList[ vID2 ].mesh.position]
-                 )
+                const lineGeometry = new LineGeometry();
+                lineGeometry.setPositions ( [
+                    this.adjacencyList[ vID1 ].mesh.position.x,
+                    this.adjacencyList[ vID1 ].mesh.position.y,
+                    this.adjacencyList[ vID1 ].mesh.position.z,
+                    this.adjacencyList[ vID2 ].mesh.position.x,
+                    this.adjacencyList[ vID2 ].mesh.position.y,
+                    this.adjacencyList[ vID2 ].mesh.position.z,
+                ] )
+
                 /* linewidth on windows will always be 1 */
-                const lineMaterial = new LineBasicMaterial(
-                    { color:edgeBasicColorHex, linewidth:edgeLineWidth }
-                );
-                const line = new Line(lineGeometry, lineMaterial);
+                const lineMaterial = new LineMaterial( {
+                    color: edgeBasicColorHex,
+                    linewidth: edgeLineWidth
+                } );
+
+                const line = new Line2( lineGeometry, lineMaterial );
+                line.computeLineDistances();
                 this.edgeGroup.add(line);
             };
         };
