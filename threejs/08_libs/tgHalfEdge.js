@@ -4,7 +4,10 @@ import { v1Bearingv2 } from './helperFunctions.js';
 /**
  * TopoGeometry - Half-edge (hyphenated so HalfEdge)
  * 
- * Half-edges should be oriented so that the adjacent face is to their left.
+ * Half-edges should be oriented so that the adjacent face is to their left
+ * i.e. they are oriented Counter Clock Wise around a face.
+ * 
+ * Half-edge 1 should originate in the same location as the threejs geometry.
  * 
  * Future change to Buffer Geometry to allow for LineStrings?
  * Expects two TGVertexes to be passed in as arguments
@@ -39,21 +42,15 @@ export class HalfEdge extends Element {
     get origin() { return this.#origin };
 
     // set & get twin
-    set twin(twinHE) {
-        this.#twin = twinHE;
-    };
+    set twin(twinHE) { this.#twin = twinHE };
     get twin() { return this.#twin };
 
     // set & get next (cycling CCW around a face)
-    set next(nextHE) {
-        this.#next = nextHE;
-    };
+    set next(nextHE) { this.#next = nextHE };
     get next() { return this.#next };
 
     // set & get prev
-    set prev(prevHE) {
-        this.#prev = prevHE;
-    };
+    set prev(prevHE) { this.#prev = prevHE };
     get prev() { return this.#prev };
 
     // set & get bearing

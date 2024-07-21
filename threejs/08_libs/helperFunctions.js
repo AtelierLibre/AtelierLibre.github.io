@@ -133,3 +133,11 @@ export function isFirstPointEqualToLast(points) {
 export function calculateSignedArea(v1, v2) {
     return (v1.x * (-v2.z) - v2.x * (-v1.z)) / 2;
 }
+
+/**
+ * Calculates the absolute difference between two bearings in degrees
+ * 0 to +180 degrees. 
+ */
+export function absoluteBearingDifference(bearing1, bearing2) {
+    return Math.abs((((bearing2 - bearing1) % 360) + 540) % 360 - 180);
+}

@@ -3,38 +3,43 @@ import { Vertex } from './tgVertex.js'; // For testing instances against
 import { Edge } from './tgEdge.js'; // For testing instances against
 import { Face } from './tgFace.js'; // For testing instances against
 import { Scene } from 'three'; // For testing instances against
+import { absoluteBearingDifference } from './helperFunctions.js';
 
 /**
  * EdgeGraph class
  * 
- * Topological links and distances from edge to edge
+ * The EdgeGraph is the graph that stores the links between the edges in the topogeometry.
+ * 
+ * Currently (Jul 2024) vertices can only be created in empty space, so their creation
+ * doesn't affect links between existing edges.
  */
 export class EdgeGraph extends Graph {
     /**
      * Create a graph between edge geometries.
-     * @param {Scene} scene - The threejs scene that the graph visualiser will be added to.
+     * 
+     * @param {Scene} scene - The threejs scene to add the graph to.
      */
     constructor(scene) {
+        // Set the colour and layer of this graph
         super(0x05fd11, 3);
 
-        //this.graphVisualiser = new GraphVisualiser(0x05fd11, 3);
         this.group.name = 'edgeGraphGroup';
         this.observer = this.observer.bind(this);
 
+        // Add the graph to the scene
         if (scene !== undefined) {
-            console.log('add edge graph group to the scene.')
             scene.add(this.group);
         };
 
     };
 
+
     /**
-     * Observer function used when subscribing to notifications from the topogeometry
+     * Observer function - subscribe to notifications from the topogeometry.
      * 
      * @param {object} data - in the format {'action': ['created', 'modified' or 'deleted'], 'item':topogeometry object}
      */
     observer(data) {
-
         if (data['action'] === 'create') {
             if (data['item'] instanceof Vertex) {
                 this.processVertex(data['item']);
@@ -50,52 +55,63 @@ export class EdgeGraph extends Graph {
         }
     };
 
+
     /**
-     * In an edge graph, at point of creation, vertices serve no purpose.
+     * Process a new topogeometry vertex.
      * 
-     * @param {Vertex} vertex - a topogeometry vertex object
+     * @param {Vertex} vertex - topogeometry vertex
      */
     processVertex(vertex) {
-        // pass
+        // Currently new topogeometry vertices do not affect edges.
     };
 
+
     /**
-     * Processes a topogeometry edge object. Creating links between it and its
-     * adjacent edges, also creating threejs curving lines (arcs) that
-     * visually represent the links.
+     * Process a new topogeometry edge.
      * 
-     * @param {Edge} edge - a topogeometry edge object
+     * Link it to adjacent edges.
+     * Calculate the costs of reaching those edges.
+     * Create arcs visualising the links.
+     * 
+     * @param {Edge} edge - topogeometry edge
      */
     processEdge(edge) {
-        // Get the two end points of the edge
-        const v1 = edge.hE1.origin;
-        const v2 = edge.hE2.origin;
 
-        for (const v of [v1, v2]) {
-            // TODO: This will probably create self-links
-            for (const he of v.sortedHalfEdges) {
-                const e = he.edge;
+        // For each of the two half-edges
+        for (const he of [edge.hE1, edge.hE2]) {
+
+            // Get the half-edge's destination
+            const v = he.twin.origin
+
+            // Loop through the half-edges leaving that vertex
+            for (const adjHE of v.sortedHalfEdges) {
 
                 // Don't include self loops.
-                // Could potentially also be achieved by filtering:
-                // let filteredArray = array.filter(obj => obj.id !== idToRemove);
-                if (e.id === edge.id) {
+                if (adjHE.id === he.twin.id) {
+                    console.log('skipping self-loop')
                     continue;
                 }
+
+                // Calculate the difference between the bearings of the two half-edges
+                const bearingChange =  absoluteBearingDifference(he.bearing, adjHE.bearing)
+
+                // Get the parent edge of the half-edge
+                const adjEdge = adjHE.edge;
 
                 // Create the curve object representing the graph link
                 // add its id to graph link properties below
                 const arc = this.addLinkArc(
                     edge.midpoint,
-                    e.midpoint
+                    adjEdge.midpoint
                 );
 
                 // Need to set it both ways
                 this.setLink(
                     edge.id,
-                    e.id,
+                    adjEdge.id,
                     {
-                        'distance': edge.length / 2 + e.length / 2,
+                        'distance': edge.length / 2 + adjEdge.length / 2,
+                        'bearingChange': bearingChange,
                         'via': v.id,
                         'visObjID': arc.id,
                         'mesh': arc
@@ -103,10 +119,11 @@ export class EdgeGraph extends Graph {
                 );
 
                 this.setLink(
-                    e.id,
+                    adjEdge.id,
                     edge.id,
                     {
-                        'distance': edge.length / 2 + e.length / 2,
+                        'distance': edge.length / 2 + adjEdge.length / 2,
+                        'bearingChange': bearingChange,
                         'via': v.id,
                         'visObjID': arc.id,
                         'mesh': arc

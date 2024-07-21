@@ -6,12 +6,13 @@ import { CSS2DRenderer } from 'three/addons/renderers/CSS2DRenderer.js';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { GUI } from 'three/addons/libs/lil-gui.module.min.js';
 import { Lut } from 'three/addons/math/Lut.js';
-import { Topogeometry } from './08_libs/topogeometry.js';
-import { g_bfs_depth_limit } from './08_libs/algorithms/g_bfs_depth_limit.js';
-import { VertexGraph } from './08_libs/graphVertex.js';
-import { EdgeGraph } from './08_libs/graphEdge.js';
-import { FaceGraph } from './08_libs/graphFace.js';
-import { TopogeometryVis } from './08_libs/topogeometryVisualiser.js';
+import { Topogeometry } from './topogeometry.js';
+import { g_bfs_depth_limit } from './algorithms/g_bfs_depth_limit.js';
+import { g_dijkstra_single_source_limit } from './algorithms/g_dijkstra_single_source_limit.js';
+import { VertexGraph } from './graphVertex.js';
+import { EdgeGraph } from './graphEdge.js';
+import { FaceGraph } from './graphFace.js';
+import { TopogeometryVis } from './topogeometryVisualiser.js';
 
 // Scene, camera, renderer
 //////////////////////////
@@ -28,8 +29,10 @@ let pointerDown = false;
 let pointerMoved = false;
 const traversalSettings = {
     algorithm: 'Breadth First Search',
-    limit: 5,
-    maxStep: 1
+    costName: 'step',
+    costLimit: 5,
+    maxStep: 1,
+    uTurnPenalty: false
 };
 
 // Create the topogeometryVis object
@@ -116,11 +119,11 @@ function init() {
 
     // GUI
     const gui = new GUI();
-    gui.add(traversalSettings, 'algorithm', [
-        'Breadth First Search',
-    ]);
-    gui.add(traversalSettings, 'limit').onChange(value => generateResultMaterials(value));
+    gui.add(traversalSettings, 'algorithm', ['Breadth First Search', 'Dijkstra Single Source']);
+    gui.add(traversalSettings, 'costName', ['step', 'distance', 'bearingChange']);
+    gui.add(traversalSettings, 'costLimit').onChange(value => generateResultMaterials(value));
     //gui.add(traversalSettings, 'maxStep');
+    gui.add(traversalSettings, 'uTurnPenalty')
     gui.add(buttons, 'Clear results');
     gui.add(buttons, 'Console log topogeometry');
     // nested controllers
@@ -130,7 +133,7 @@ function init() {
     layerVisibilityFolder.add(layerControls, 'Show/hide edge graph');
     layerVisibilityFolder.add(layerControls, 'Show/hide face graph');
 
-    generateResultMaterials(traversalSettings.limit); // initialise
+    generateResultMaterials(traversalSettings.costLimit); // initialise
 
     // Raycaster and pointer
     // Create a Plane object - adjust normal and constant as needed
@@ -184,28 +187,39 @@ function generateResultMaterials(value) {
     lut.setMax(value);
 };
 
-function traverseGraph(graph, start_id, traversalSettings) {
+function traverseGraph(graph, startID, traversalSettings) {
     console.log(traversalSettings)
 
     const combinedLookup = { ...topogeometry.vertices, ...topogeometry.edges, ...topogeometry.faces };
     // Empty the resultGroup of any previous results
     resultGroup.children.length = 0;
 
+    let resultGenerator;
+
     switch (traversalSettings.algorithm) {
-
         case 'Breadth First Search':
-            let result_generator = g_bfs_depth_limit(graph, start_id, traversalSettings.limit);
-
-            for (let result of result_generator) {
-                let ID = result[0];
-                const distance = Object.values(result[1])[0]['depth'];
-                addResultMesh(combinedLookup, ID, distance);
-            }
+            resultGenerator = g_bfs_depth_limit(graph, startID, traversalSettings.costLimit);
             break;
-
+        case 'Dijkstra Single Source':
+            resultGenerator = g_dijkstra_single_source_limit(
+                graph,
+                startID,
+                traversalSettings.costName,
+                traversalSettings.costLimit,
+                traversalSettings.uTurnPenalty,
+            );
+            break;
         default:
             console.log(`Sorry, there is no algorithm ${expr}.`);
     };
+
+    for (let result of resultGenerator) {
+        console.log(result)
+        let ID = result[0];
+        const totalCost = Object.values(result[1])[0]['totalCost'];
+        addResultMesh(combinedLookup, ID, totalCost);
+    }
+
 };
 
 ///////////////////////////////
@@ -305,36 +319,29 @@ function onPointerUp(event) {
     // Click/tap and release without moving
     if (pointerDown && !pointerMoved) {
 
-        // If not on a line or point
-        if (!rayIntersectedMeshes.length > 0) {
 
+        if (!rayIntersectedMeshes.length > 0) {
+            // If not on a line or point, create a vertex
             topogeometry.createVertex(rayPlaneIntersection);
 
-            // If on a line or point
         } else {
-            const object_id = rayIntersectedMeshes[0].object.userData['id']
+            // If on a geometry, traverse its graph
+            const objectID = rayIntersectedMeshes[0].object.userData['id']
 
-            console.log("Pointer up on:", object_id)
-
-            let graph
-            if (object_id[0] === 'v') {
-                graph = vertexGraph;
-            } else if (object_id[0] === 'e') {
-                graph = edgeGraph;
-            } else if (object_id[0] === 'f') {
-                graph = faceGraph;
+            if (objectID[0] === 'v') {
+                traverseGraph(vertexGraph, objectID, traversalSettings)
+            } else if (objectID[0] === 'e') {
+                traverseGraph(edgeGraph, objectID, traversalSettings)
+            } else if (objectID[0] === 'f') {
+                traverseGraph(faceGraph, objectID, traversalSettings)
             } else {
                 console.warn("Could not identify graph to use")
             }
 
-            traverseGraph(
-                graph,
-                object_id,
-                traversalSettings)
         }
-        // Click/tap, move and release
+
     } else if (pointerDown && pointerMoved) {
-        // If releasing on a geometry
+        // If releasing on a geometry, create a new topogeometry edge
         if (rayIntersectedMeshes.length > 0) {
 
             v2id = rayIntersectedMeshes[0].object.userData['id'];
@@ -343,7 +350,7 @@ function onPointerUp(event) {
         };
     };
 
-    // Reset the flags
+    // Reset flags
     pointerDown = false;
     pointerMoved = false;
     controls.enabled = true;

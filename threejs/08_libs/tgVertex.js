@@ -8,9 +8,9 @@
     const mesh = new Mesh(geometry, baseMaterial);
 
     /**
-     * Class representing a topogeometry vertex 
+     * Topogeometry vertex class 
      * 
-     * This should be fairly minimal. Strictly, it requires only
+     * Should be fairly minimal. Strictly, it requires only
      * one link to an adjacent half-edge.
      * 
      * Ordering of half-edges around the vertex is stored in the
@@ -71,7 +71,7 @@
                 }
             }
 
-            // Note: sorts in place
+            // Note: sorts in place.
             this.sortedHalfEdges = halfEdgeArray.sort((a, b) => a.bearing - b.bearing);
 
             return this.sortedHalfEdges

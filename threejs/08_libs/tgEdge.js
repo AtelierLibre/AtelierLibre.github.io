@@ -78,7 +78,10 @@ export class Edge extends Element {
         };
     };
 
-    // update & get length
+    /**
+     * Updates length to be straight line distance between the
+     * end vertices.
+     */
     updateLength() {
         this.#length = this.hE1.origin.position.distanceTo(
             this.hE2.origin.position

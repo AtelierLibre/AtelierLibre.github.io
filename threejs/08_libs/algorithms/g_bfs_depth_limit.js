@@ -1,8 +1,7 @@
-
 import { Graph } from '../graph.js';
 
 /**
- * Breadth First Search generator with depth limit
+ * Breadth First Search, generator with depth limit
  * 
  * For BFS, weights are not considered. BFS also yields each object (node) only once,
  * it does not 'update' the path used to get to a node as Dijkstra does.
@@ -16,8 +15,6 @@ export function* g_bfs_depth_limit(graph, start_id, limit) {
 
     const visited = new Set();
     const queue = [{ 'id': start_id, 'depth': 0, 'predecessor': null }];
-    const links = graph.links;
-    console.log(links)
 
     visited.add(start_id);
 
@@ -28,12 +25,17 @@ export function* g_bfs_depth_limit(graph, start_id, limit) {
             for (let [neighbour_id, value] of Object.entries(graph.links[current.id])) {
                 if (!visited.has(neighbour_id)) {
                     visited.add(neighbour_id);
-                    queue.push({ 'id': neighbour_id, 'depth': current.depth + 1, 'predecessor':current.id });
+                    queue.push({
+                        'id': neighbour_id,
+                        'depth': current.depth + 1,
+                        'predecessor':current.id
+                    });
                 }
             }
         }
 
-        // [current.predecessor] is a 'computed property name' and should be the string id of the predecessor
-        yield [current.id, { [current.predecessor]:{ 'depth': current.depth }}];
+        // [current.predecessor] is a 'computed property name'
+        // and should be the string id of the predecessor
+        yield [current.id, { [current.predecessor]:{ 'totalCost': current.depth }}];
     }
 };
