@@ -6,13 +6,13 @@ import { CSS2DRenderer } from 'three/addons/renderers/CSS2DRenderer.js';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { GUI } from 'three/addons/libs/lil-gui.module.min.js';
 import { Lut } from 'three/addons/math/Lut.js';
-import { Topogeometry } from './topogeometry.js';
-import { g_bfs_depth_limit } from './algorithms/g_bfs_depth_limit.js';
-import { g_dijkstra_single_source_limit } from './algorithms/g_dijkstra_single_source_limit.js';
-import { VertexGraph } from './graphVertex.js';
-import { EdgeGraph } from './graphEdge.js';
-import { FaceGraph } from './graphFace.js';
-import { TopogeometryVis } from './topogeometryVisualiser.js';
+import { Topogeometry } from './08_libs/topogeometry.js';
+import { g_bfs_depth_limit } from './08_libs/algorithms/g_bfs_depth_limit.js';
+import { g_dijkstra_single_source_limit } from './08_libs/algorithms/g_dijkstra_single_source_limit.js';
+import { VertexGraph } from './08_libs/graphVertex.js';
+import { EdgeGraph } from './08_libs/graphEdge.js';
+import { FaceGraph } from './08_libs/graphFace.js';
+import { TopogeometryVis } from './08_libs/topogeometryVisualiser.js';
 
 // Scene, camera, renderer
 //////////////////////////
