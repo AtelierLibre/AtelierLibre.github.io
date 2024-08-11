@@ -12,7 +12,6 @@ import { g_dijkstra_single_source_limit } from './08_libs/algorithms/g_dijkstra_
 import { VertexGraph } from './08_libs/graphVertex.js';
 import { EdgeGraph } from './08_libs/graphEdge.js';
 import { FaceGraph } from './08_libs/graphFace.js';
-import { TopogeometryVis } from './08_libs/topogeometryVisualiser.js';
 
 // Scene, camera, renderer
 //////////////////////////
@@ -35,10 +34,9 @@ const traversalSettings = {
     uTurnPenalty: false
 };
 
-// Create the topogeometryVis object
-let topogeometryVis;
+
 // Create the topogeometry - this is the new approach
-const topogeometry = new Topogeometry();
+let topogeometry = new Topogeometry();
 // Create some graphs
 const vertexGraph = new VertexGraph();
 const edgeGraph = new EdgeGraph();
@@ -143,14 +141,15 @@ function init() {
     raycaster.params.Line.threshold = 0.3;
     raycaster.linePrecision = 0.01;
 
+    // Add the topogeometry elements to the scene
+    scene.add(topogeometry.tgVertexGroup);
+    scene.add(topogeometry.tgEdgeGroup);
+    scene.add(topogeometry.tgFaceGroup);
     // Add the graph visualisers to the scene
     scene.add(vertexGraph.group);
     scene.add(edgeGraph.group);
     scene.add(faceGraph.group);
 
-    topogeometryVis = new TopogeometryVis(scene);
-    // Subscribe the topogeometryVis to the topogeometry
-    topogeometry.subscribe(topogeometryVis.observer);
     // Subscribe the graphs to the topogeometry
     topogeometry.subscribe(vertexGraph.observer);
     topogeometry.subscribe(edgeGraph.observer);
@@ -253,9 +252,9 @@ function onPointerDown(event) {
 
     // Intersect raycaster with geometries
     rayIntersectedMeshes = raycaster.intersectObjects([
-        ...topogeometryVis.tgVertexGroup.children,
-        ...topogeometryVis.tgEdgeGroup.children,
-        ...topogeometryVis.tgFaceGroup.children,
+        ...topogeometry.tgVertexGroup.children,
+        ...topogeometry.tgEdgeGroup.children,
+        ...topogeometry.tgFaceGroup.children,
     ]);
 
     if (rayIntersectedMeshes.length > 0) {
@@ -299,14 +298,13 @@ function onPointerMove(event) {
     // When dragging from one point to another you only want to find points
     if (pointerDown) {
         rayIntersectedMeshes = raycaster.intersectObjects(
-            topogeometryVis.tgVertexGroup.children
+            topogeometry.tgVertexGroup.children
         )
         // When just mousing around you want to find all geometries
     } else {
         rayIntersectedMeshes = raycaster.intersectObjects([
-            ...topogeometryVis.tgVertexGroup.children,
-            ...topogeometryVis.tgEdgeGroup.children,
-            ...topogeometryVis.tgEdgeGroup.children
+            ...topogeometry.tgVertexGroup.children,
+            ...topogeometry.tgEdgeGroup.children,            ...topogeometry.tgEdgeGroup.children
         ]);
     };
 

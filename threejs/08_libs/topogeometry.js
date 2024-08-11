@@ -1,7 +1,7 @@
 import { Vertex } from './tgVertex.js';
 import { Edge } from './tgEdge.js';
 import { Face } from './tgFace.js';
-import { Vector3 } from 'three';
+import { Group, Vector3 } from 'three';
 import { calculateSignedArea } from './helperFunctions.js';
 
 /**
@@ -13,10 +13,25 @@ export class Topogeometry {
     constructor() {
         this.#time = 0;
 
+        this.elements = {};
+
         this.vertices = {};
         this.edges = {};
         this.halfEdges = {};
         this.faces = {};
+
+        this.tgVertexGroup = new Group();
+        this.tgVertexGroup.name = 'tgVertexGroup';
+        this.tgVertexGroup.renderOrder = 3;
+
+        this.tgEdgeGroup = new Group();
+        this.tgEdgeGroup.name = 'tgEdgeGroup';
+        //this.tgEdgeGroup.renderOrder = 2;
+
+        this.tgFaceGroup = new Group();
+        this.tgFaceGroup.name = 'tgFaceGroup';
+        this.tgFaceGroup.translateY -= 10;
+        this.tgFaceGroup.renderOrder = 1;
 
         this.observers = [];
 
@@ -42,7 +57,9 @@ export class Topogeometry {
         vertex.timeCreated = this.currentTime;
 
         // Add it to the vertices
+        this.elements[vertex.id] = vertex;
         this.vertices[vertex.id] = vertex;
+        this.tgVertexGroup.add(vertex.mesh);
 
         // notify observers
         this.notify('create', vertex);
@@ -77,7 +94,10 @@ export class Topogeometry {
         newEdge.timeCreated = time;
 
         //Note: the half-edges are created automatically by the edge
+        this.elements[newEdge.id] = newEdge;
         this.edges[newEdge.id] = newEdge;
+        this.tgEdgeGroup.add(newEdge.mesh)
+
         this.halfEdges[newEdge.hE1.id] = newEdge.hE1;
         this.halfEdges[newEdge.hE2.id] = newEdge.hE2;
 
@@ -203,7 +223,13 @@ export class Topogeometry {
 
         face.timeCreated = this.currentTime;
 
+        this.elements[face.id] = face;
         this.faces[face.id] = face;
+        // Don't process unbounded face 'f0'
+        if (face.id !== 'f0') {
+            console.log('createFace',face)
+            this.tgFaceGroup.add(face.mesh);
+        };
 
         // notify observers
         this.notify('create', face);
@@ -224,7 +250,13 @@ export class Topogeometry {
 
     #deleteFace(face) {
 
+        let object_to_delete = this.tgFaceGroup.getObjectById(face.meshID);
+        // remove it from the group and from the scene
+        this.tgFaceGroup.remove(object_to_delete)
+        //dispose of its custom geometry
+        object_to_delete.geometry.dispose();
         this.notify('delete', face)
+        delete this.elements[face.id];
         delete this.faces[face.id];
 
     };

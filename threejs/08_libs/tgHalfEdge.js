@@ -1,16 +1,19 @@
 import { Element } from './tgElement.js';
-import { v1Bearingv2 } from './helperFunctions.js';
+import { v1Bearingv2, insetLineSegment } from './helperFunctions.js';
+import { BufferGeometry, Float32BufferAttribute } from 'three';
+
+const geometry = new BufferGeometry();
 
 /**
  * TopoGeometry - Half-edge (hyphenated so HalfEdge)
  * 
- * Half-edges should be oriented so that the adjacent face is to their left
- * i.e. they are oriented Counter Clock Wise around a face.
+ * Half-edges are oriented counter-clockwise i.e. the adjacent face is to the left
  * 
  * Half-edge 1 should originate in the same location as the threejs geometry.
  * 
- * Future change to Buffer Geometry to allow for LineStrings?
- * Expects two TGVertexes to be passed in as arguments
+ * Future change to Buffer Geometry to allow for LineStrings? Potentially store
+ * copies of the parent edge's geometry only (i.e. not material or mesh) oriented
+ * according to the half-edge direction i.e. reversed for hE2.
  */
 export class HalfEdge extends Element {
     #origin;
@@ -30,9 +33,11 @@ export class HalfEdge extends Element {
         this.#twin = null;
         this.#next = null;
         this.#prev = null;
-        this.#bearing = null; // bearing of half-edge away from origin
+        this.#bearing = null; // bearing away from origin
         this.#face = null; // to the left
         this.#edge = null;
+        // Geometry
+        this.geometry = geometry.clone();
 
         this.#origin.addHalfEdge(this);
 
@@ -65,21 +70,45 @@ export class HalfEdge extends Element {
     set edge(edge) { this.#edge = edge };
     get edge() { return this.#edge };
 
-    // update bearing
+    /**
+     * Update the half-edge's bearing
+     * 
+     * Requires the half-edge's twin to be set.
+     * 
+     * @returns {number} - The bearing of this half-edge
+     */
     updateBearing() {
-        const p1 = this.origin.position;
-        const p2 = this.twin.origin.position;
-
-        const bearing = v1Bearingv2(p1, p2);
-
-        if (typeof bearing !== 'number') {
-            throw new Error('Half-edge bearing not set correctly!');
+        if (this.twin !== null) {
+            const p1 = this.origin.position;
+            const p2 = this.twin.origin.position;
+            return this.#bearing = v1Bearingv2(p1, p2);
         } else {
-            this.#bearing = bearing
-        };
-
-        return bearing;
+            console.warn("HalfEdge.updateBearing, twin not set.")
+        }
     };
+
+    /**
+     * Update the half-edge's geometry
+     * 
+     * Currently requires the half-edge's twin to be set.
+     * 
+     * There is the intention that edges (and half-edges) should be able to be
+     * linestrings, not just linesegments.
+     * 
+     */
+    updateGeometry() {
+        const p1 = [this.#origin.position.x, this.#origin.position.z]
+        const p2 = [this.#twin.origin.position.x, this.#twin.origin.position.z];
+        // Update the geometry
+        this.geometry.setAttribute(
+            'position',
+            new Float32BufferAttribute(
+                [ p1[0], 0, p1[1], p2[0], 0, p2[1] ],
+                3
+            )
+        );
+    };
+
 
     /**
      * Yields the chain of next half-edges starting with this one.

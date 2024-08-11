@@ -91,7 +91,7 @@ export function calculateBearingChange2D(A, B, C) {
  * Calculate the compass bearing (radians) from one x,z position to another
  * @param {*} v1 
  * @param {*} v2 
- * @returns 
+ * @returns {number} - The bearing from one position to another
  */
 export function v1Bearingv2(v1, v2) {
     const dx = v2.x - v1.x;
@@ -100,7 +100,15 @@ export function v1Bearingv2(v1, v2) {
     let bearing = Math.atan2(dz, dx);
     bearing = bearing * 180 / Math.PI;
     bearing = (bearing + 360) % 360;
+
+    // Not sure what conditions would trigger this but it obviously
+    // seemed necessary at some point...
+    if (typeof bearing !== 'number') {
+        throw new Error('Half-edge bearing not calculated correctly!');
+    }
+
     return bearing;
+
 };
 
 export function isClockwise(points) {
@@ -140,4 +148,31 @@ export function calculateSignedArea(v1, v2) {
  */
 export function absoluteBearingDifference(bearing1, bearing2) {
     return Math.abs((((bearing2 - bearing1) % 360) + 540) % 360 - 180);
+}
+
+/**
+ * Normalize a vector to unit length
+ * @param {*} v - a vector with two components
+ * @returns - a vector with two components
+ */
+export function normalizeVector(v) {
+    let norm = Math.hypot(v[0], v[1]);
+    return norm === 0 ? v : [v[0] / norm, v[1] / norm];
+}
+
+/**
+ * Inset line segment
+ * @param {*} p1 - a point with 2 components
+ * @param {*} p2 - a point with 2 components
+ * @param {*} distance - a distance to offset by
+ * @returns - two points offset by the specified distance
+ */
+export function insetLineSegment(p1, p2, distance) {
+    let direction = [p2[0] - p1[0], p2[1] - p1[1]];
+    let normal = [-direction[1], direction[0]];
+    normal = normalizeVector(normal);
+    return [
+        [p1[0] + distance * normal[0], p1[1] + distance * normal[1]],
+        [p2[0] + distance * normal[0], p2[1] + distance * normal[1]]
+    ];
 }

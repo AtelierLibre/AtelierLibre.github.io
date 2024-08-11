@@ -30,8 +30,10 @@ export class Edge extends Element {
 
         this.#length = null;
         this.#midpoint = new Vector3();
+        // Geometry & Mesh
         this.geometry = geometry.clone();
         this.mesh = new Line(this.geometry, baseMaterial);
+        this.mesh.userData['id'] = this.id;
         this.mesh.userData.baseMaterial = baseMaterial;
         this.mesh.userData.highlightMaterial = highlightMaterial;
 
@@ -51,6 +53,10 @@ export class Edge extends Element {
         this.hE1.updateBearing();
         this.hE2.updateBearing();
 
+        // Update half-edge geometry
+        this.hE1.updateGeometry();
+        this.hE2.updateGeometry();
+
         // Get the half-edges around each origin sorted by bearing
         this.hE1.origin.sortHalfEdges();
         this.hE2.origin.sortHalfEdges();
@@ -61,7 +67,6 @@ export class Edge extends Element {
 
         // Update the mesh
         this.mesh.geometry.setFromPoints([v1.position, v2.position]);
-        this.mesh.userData['id'] = this.id;
 
         this.update();
     };
