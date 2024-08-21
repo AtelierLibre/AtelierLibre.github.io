@@ -8,12 +8,12 @@ import { TransformControls } from 'three/addons/controls/TransformControls.js';
 import { GUI } from 'three/addons/libs/lil-gui.module.min.js';
 import { Lut } from 'three/addons/math/Lut.js';
 
-import { Topogeometry } from './topogeometry.js';
-import { g_bfs_depth_limit } from './algorithms/g_bfs_depth_limit.js';
-import { g_dijkstra_single_source_limit } from './algorithms/g_dijkstra_single_source_limit.js';
-import { VertexGraph } from './graphVertex.js';
-import { EdgeGraph } from './graphEdge.js';
-import { FaceGraph } from './graphFace.js';
+import { Topogeometry } from './09_libs/topogeometry.js';
+import { g_bfs_depth_limit } from './09_libs/algorithms/g_bfs_depth_limit.js';
+import { g_dijkstra_single_source_limit } from './09_libs/algorithms/g_dijkstra_single_source_limit.js';
+import { VertexGraph } from './09_libs/graphVertex.js';
+import { EdgeGraph } from './09_libs/graphEdge.js';
+import { FaceGraph } from './09_libs/graphFace.js';
 
 // Scene, camera, renderer
 //////////////////////////
