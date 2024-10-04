@@ -1,0 +1,28 @@
+---
+layout: threejs_default
+title: Project X
+---
+
+    <!-- Main viewport for three.js -->
+    <canvas class="webgl"></canvas>
+
+    <div id="info">
+        Project X<br/>
+        Click in space to place vertices<br/>
+        Click and drag in space to orbit<br/>
+        Click and drag between vertices to create links<br/>
+        Choose an appropriate algorithm and distance threshold<br/>
+        Click on a point, line or polygon to start the analysis<br/>
+    </div>
+    
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://cdn.jsdelivr.net/npm/three@v0.167.0/build/three.module.js",
+                "three/addons/": "https://cdn.jsdelivr.net/npm/three@v0.167.0/examples/jsm/"
+            }
+        }
+    </script>
+
+    <!-- type must be module for imports and exports to work -->
+    <script type="module" src="./js/main.js"></script>
