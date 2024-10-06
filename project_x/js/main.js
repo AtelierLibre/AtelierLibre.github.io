@@ -153,6 +153,9 @@ function init() {
         const topogeometryID = transformControls.object.userData.id;
         topogeometry.elements[topogeometryID].modifyPosition();
     } );
+    // Create a placeholder object
+    const placeholder = new THREE.Object3D();
+    transformControls.attach(placeholder);
     scene.add( transformControls );
 
     // GUI
