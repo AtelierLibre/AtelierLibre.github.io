@@ -114,7 +114,6 @@ function initialise() {
 				jstsMagic( vertexHelperGroup );
 			};
 		} );
-		transformControl.addEventListener( )
 		scene.add( transformControl );
 	}
 	addTransformControl( scene )
