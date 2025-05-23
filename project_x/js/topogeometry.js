@@ -26,10 +26,10 @@ export class Topogeometry {
 
         this.tgEdgeGroup = new Group();
         this.tgEdgeGroup.name = 'tgEdgeGroup';
+        this.tgEdgeGroup.translateY(0.01);
 
         this.tgFaceGroup = new Group();
         this.tgFaceGroup.name = 'tgFaceGroup';
-        this.tgFaceGroup.translateY -= 10;
         this.tgFaceGroup.renderOrder = 1;
 
         this.observers = [];
@@ -320,7 +320,7 @@ export class Topogeometry {
     // I don't believe this needs to be async. It does need to be a generator though.
     async *processCoordinates(coordinates) {
         for (const coord of coordinates) {
-            await new Promise(resolve => setTimeout(resolve, 10)); // simulated delay
+            await new Promise(resolve => setTimeout(resolve, 30)); // simulated delay
 
             const vector3 = this.vector3FromCoordinate(coord);
             const vertex = this.createVertex(vector3);

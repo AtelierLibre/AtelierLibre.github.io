@@ -1,18 +1,22 @@
-class Node {
-    constructor(val, priority) {
-        this.val = val;
-        this.priority = priority;
-    }
-}
-
+/**
+ * Priority Queue.
+ * 
+ * Implemented as an array of tuples (removes need for a node object).
+ * Note: Enqueued (val, priority) are stored as [priority, val]
+ */
 export class PriorityQueue {
     constructor() {
         this.values = [];
     }
 
+    /**
+     * enqueue
+     * @param {string} val - An object/node id as a string e.g. 'v0'.
+     * @param {number} priority - A priority e.g. distance
+     */
     enqueue(val, priority) {
-        let newNode = new Node(val, priority);
-        this.values.push(newNode);
+        // Insert as a tuple [priority, val]
+        this.values.push([priority, val]);
         this.bubbleUp();
     }
 
@@ -22,13 +26,18 @@ export class PriorityQueue {
         while (idx > 0) {
             let parentIdx = Math.floor((idx - 1) / 2);
             let parent = this.values[parentIdx];
-            if (element.priority >= parent.priority) break;
+            if (element[0] >= parent[0]) break; // Compare priorities
             this.values[parentIdx] = element;
             this.values[idx] = parent;
             idx = parentIdx;
         }
     }
 
+    /**
+     * dequeue returns the value (ID etc.) with the lowest priority
+     * Note: only the value (e.g. ID) is returned, not the priority
+     * @returns {string} - An object/node id as a string e.g. 'v0'.
+     */
     dequeue() {
         const min = this.values[0];
         const end = this.values.pop();
@@ -36,7 +45,7 @@ export class PriorityQueue {
             this.values[0] = end;
             this.sinkDown();
         }
-        return min;
+        return min[1]; // Return only the value, not the priority
     }
 
     sinkDown() {
@@ -51,7 +60,7 @@ export class PriorityQueue {
 
             if (leftChildIdx < length) {
                 leftChild = this.values[leftChildIdx];
-                if (leftChild.priority < element.priority) {
+                if (leftChild[0] < element[0]) {
                     swap = leftChildIdx;
                 }
             }
@@ -59,8 +68,8 @@ export class PriorityQueue {
             if (rightChildIdx < length) {
                 rightChild = this.values[rightChildIdx];
                 if (
-                    (swap === null && rightChild.priority < element.priority) ||
-                    (swap !== null && rightChild.priority < leftChild.priority)
+                    (swap === null && rightChild[0] < element[0]) ||
+                    (swap !== null && rightChild[0] < leftChild[0])
                 ) {
                     swap = rightChildIdx;
                 }
@@ -71,5 +80,13 @@ export class PriorityQueue {
             this.values[swap] = element;
             idx = swap;
         }
+    }
+
+    /**
+     * Returns whether the priority queue is empty.
+     * @returns {boolean} - True if empty
+     */
+    isEmpty() {
+        return this.values.length === 0;
     }
 }

@@ -9,12 +9,14 @@ import { GUI } from 'three/addons/libs/lil-gui.module.min.js';
 import { Lut } from 'three/addons/math/Lut.js';
 
 import { Topogeometry } from './topogeometry.js';
-import { g_bfs_depth_limit } from './algorithms/g_bfs_depth_limit.js';
-import { g_dijkstra_single_source_limit } from './algorithms/g_dijkstra_single_source_limit.js';
+import { gBFSDepthLimit } from './algorithms/gBFSDepthLimit.js';
+import { gDijkstraSingleSourceLimit } from './algorithms/gDijkstraSingleSourceLimitAll.js';
+import { gBetweennessCentrality } from './algorithms/gBetweennessCentrality.js';
 import { VertexGraph } from './graphVertex.js';
 import { EdgeGraph } from './graphEdge.js';
 import { FaceGraph } from './graphFace.js';
 
+import { agGrid, agGridLinks } from './io/gridCreator.js';
 import { sample1 } from './io/sampleData.js';
 
 // Scene, camera, renderer
@@ -41,14 +43,6 @@ const pointerMovedPosition = new THREE.Vector2();
 let holdTimeout;
 let isHolding = false;
 
-const traversalSettings = {
-    algorithm: 'Breadth First Search',
-    costName: 'step',
-    costLimit: 5,
-    stepLimit: 0,
-    uTurnPenalty: false
-};
-
 // Create the topogeometry and default graphs
 let topogeometry = new Topogeometry();
 const vertexGraph = new VertexGraph();
@@ -62,14 +56,48 @@ lut.lut.reverse();
 const resultGroup = new THREE.Group();
 resultGroup.translateY(0.02);
 
-// GUI functions
-const buttons = {
+// GUI controlled functions and settings
+////////////////////////////////////////
+const sampleDataControls = {
+    'sample1': function() {
+        topogeometry.startProcessing(sample1)
+    }
+};
+const gridGeneratorControls = {
+    'rows': 20,
+    'columns': 20,
+    'distance': 1,
+    'delay': 0,
+    'Generate grid': async function () {
+        const vertexIDs = [];
+
+        const gridGen = agGrid(this.rows, this.columns, this.distance, this.delay);
+        for await (const v3 of gridGen) {
+            const vertex = topogeometry.createVertex(v3);
+            vertexIDs.push(vertex.id)
+        }
+
+        const gridLinkGen = agGridLinks(this.rows, this.columns, vertexIDs, this.delay);
+        for await (const l of gridLinkGen) {
+            console.log(l)
+            topogeometry.createEdge( l[0], l[1] )
+        }
+    }
+};
+const traversalSettings = {
+    algorithm: 'Breadth First Search',
+    costName: 'step',
+    costLimit: 5,
+    stepLimit: 0,
+    delay: 20,
+    uTurnPenalty: false
+};
+const resultsControls = {
+    'Auto-clear results': false,
     'Clear results': function () {
         resultGroup.children.length = 0;
     },
-    'Console log topogeometry': function () {
-        console.log(topogeometry)
-    }
+
 };
 const layerControls = {
     'Show/hide vertex graph': function () {
@@ -85,11 +113,12 @@ const layerControls = {
         console.log('faceGraph', faceGraph);
     }
 };
-const sampleDataControls = {
-    'sample1': function() {
-        topogeometry.startProcessing(sample1)
+const debuggingControls = {
+    'Console log topogeometry': function () {
+        console.log(topogeometry)
     }
-};
+}
+
 
 /**
  * init function
@@ -98,28 +127,32 @@ const sampleDataControls = {
  */
 function init() {
 
-    // Scene - black background
+    /////////////////////
+    // Create the scene
+    /////////////////////
     scene = new THREE.Scene();
     scene.background = new THREE.Color(0, 0, 0);
-
     // Camera (Field of view, Aspect ratio, Near clipping plane, Far clipping plane)
     camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     camera.position.set( 0, 5, 5 );
     scene.add(camera);
-
     // Lights
     scene.add( new THREE.AmbientLight( 0xf0f0f0, 3 ) );
-
     // GridHelper ( size, divisions, colorCenterLine, colorGrid )
     const gridHelper = new THREE.GridHelper(100, 100, 0x888888, 0x444444);
     scene.add(gridHelper);
-
     // Axes helper
     const axesHelper = new THREE.AxesHelper(5);
     scene.add(axesHelper);
 
+    //////////////
     // Renderers
-    renderer = new THREE.WebGLRenderer({ canvas: canvasRef, antialias: true });
+    //////////////
+    renderer = new THREE.WebGLRenderer({
+        canvas: canvasRef,
+        antialias: true,
+        logarithmicDepthBuffer: true
+    });
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.setSize(window.innerWidth, window.innerHeight);
 
@@ -133,6 +166,9 @@ function init() {
 
     document.body.appendChild(stats.dom);
 
+    /////////////
+    // Controls
+    /////////////
     // Orbit Controls
     orbitControls = new OrbitControls(camera, renderer.domElement);
     orbitControls.enableDamping = true;
@@ -155,45 +191,66 @@ function init() {
     } );
     scene.add( transformControls );
 
+    ////////
     // GUI
+    ////////
     const gui = new GUI();
-    gui.add(traversalSettings, 'algorithm', ['Breadth First Search', 'Dijkstra Single Source']);
-    gui.add(traversalSettings, 'costName', ['step', 'distance', 'bearingChange']);
-    gui.add(traversalSettings, 'costLimit').onChange(value => generateResultMaterials(value));
-    gui.add(traversalSettings, 'stepLimit');
-    gui.add(traversalSettings, 'uTurnPenalty');
-    gui.add(buttons, 'Clear results');
-    gui.add(buttons, 'Console log topogeometry');
-    // nested controllers
+    // basic io
+    const ioSampleDataFolder = gui.addFolder('Sample data');
+    ioSampleDataFolder.add(sampleDataControls, 'sample1');
+    const gridGeneratorFolder = ioSampleDataFolder.addFolder('Grid generator');
+    gridGeneratorFolder.add(gridGeneratorControls, 'rows');
+    gridGeneratorFolder.add(gridGeneratorControls, 'columns');
+    gridGeneratorFolder.add(gridGeneratorControls, 'distance');
+    gridGeneratorFolder.add(gridGeneratorControls, 'delay');
+    gridGeneratorFolder.add(gridGeneratorControls, 'Generate grid');
+    // graph analysis
+    const graphAnalysisFolder = gui.addFolder('Graph analysis');
+    graphAnalysisFolder.add(traversalSettings, 'algorithm', [
+        'Breadth First Search', 'Dijkstra Single Source', 'Betweenness Centrality'
+    ]);
+    graphAnalysisFolder.add(traversalSettings, 'costName', ['step', 'distance', 'bearingChange']);
+    graphAnalysisFolder.add(traversalSettings, 'costLimit').onChange(value => generateResultMaterials(value));
+    graphAnalysisFolder.add(traversalSettings, 'stepLimit');
+    graphAnalysisFolder.add(traversalSettings, 'uTurnPenalty');
+    graphAnalysisFolder.add(traversalSettings, 'delay');
+    graphAnalysisFolder.add(resultsControls, 'Auto-clear results');
+    graphAnalysisFolder.add(resultsControls, 'Clear results');
+    // graph visibility
     const layerVisibilityFolder = gui.addFolder('Layer visibility');
     layerVisibilityFolder.close();
     layerVisibilityFolder.add(layerControls, 'Show/hide vertex graph');
     layerVisibilityFolder.add(layerControls, 'Show/hide edge graph');
     layerVisibilityFolder.add(layerControls, 'Show/hide face graph');
-    // basic io
-    const ioSampleDataFolder = gui.addFolder('Sample data');
-    ioSampleDataFolder.close();
-    ioSampleDataFolder.add(sampleDataControls, 'sample1');
+    // debugging
+    const debuggingFolder = gui.addFolder('Debugging');
+    debuggingFolder.close();
+    debuggingFolder.add(debuggingControls, 'Console log topogeometry');
 
-    generateResultMaterials(traversalSettings.costLimit); // initialise
+    ////////////////////////////////////
+    // Initialise the result materials
+    ////////////////////////////////////
+    generateResultMaterials(traversalSettings.costLimit);
 
-    // Add the topogeometry elements to the scene
+    ///////////////////////////////////////////////////////////
+    // Add topogeometry, graph and result groups to the scene
+    ///////////////////////////////////////////////////////////
     scene.add(topogeometry.tgVertexGroup);
     scene.add(topogeometry.tgEdgeGroup);
     scene.add(topogeometry.tgFaceGroup);
-    // Add the graph visualisers to the scene
     scene.add(vertexGraph.group);
     scene.add(edgeGraph.group);
     scene.add(faceGraph.group);
+    scene.add(resultGroup);
 
     // Subscribe the graphs to the topogeometry
     topogeometry.subscribe(vertexGraph.observer);
     topogeometry.subscribe(edgeGraph.observer);
     topogeometry.subscribe(faceGraph.observer);
 
-    // Add the resultGroup to the scene
-    scene.add(resultGroup);
-
+    //////////////////////////////////////
+    // Add event listeners to the canvas
+    //////////////////////////////////////
     window.addEventListener('resize', onWindowResize);
     canvasRef.addEventListener('pointerdown', onPointerDown, { passive: false });
     canvasRef.addEventListener('pointermove', onPointerMove, { passive: false });
@@ -204,9 +261,10 @@ function init() {
     render();
 };
 
-////////////////////////////////////////////////////
-// Traverse the graph & add the results to the scene
-////////////////////////////////////////////////////
+///////////////////////////
+// Visualisation of results
+///////////////////////////
+
 function addResultMesh(combinedLookup, ID, distance) {
     const resultMesh = combinedLookup[ID].mesh.clone();
     const c_ = lut.getColor(distance);
@@ -221,40 +279,71 @@ function generateResultMaterials(value) {
     lut.setMax(value);
 };
 
-function traverseGraph(graph, startID, traversalSettings) {
+//////////////////
+// Graph traversal
+//////////////////
+async function traverseGraph(graph, startID, traversalSettings) {
     console.log(traversalSettings)
 
     const combinedLookup = { ...topogeometry.vertices, ...topogeometry.edges, ...topogeometry.faces };
     // Empty the resultGroup of any previous results
-    resultGroup.children.length = 0;
+    if (resultsControls['Auto-clear results']){
+        resultGroup.children.length = 0;
+    }
 
     let resultGenerator;
-
     switch (traversalSettings.algorithm) {
         case 'Breadth First Search':
-            resultGenerator = g_bfs_depth_limit(graph, startID, traversalSettings.costLimit);
+            resultGenerator = gBFSDepthLimit(
+                graph,
+                startID,
+                traversalSettings.costLimit,
+                traversalSettings.delay,
+            );
             break;
         case 'Dijkstra Single Source':
-            resultGenerator = g_dijkstra_single_source_limit(
+            resultGenerator = gDijkstraSingleSourceLimit(
                 graph,
                 startID,
                 traversalSettings.costName,
                 traversalSettings.costLimit,
                 traversalSettings.uTurnPenalty,
                 traversalSettings.stepLimit,
+                traversalSettings.delay,
+            );
+            break;
+        case 'Betweenness Centrality':
+            resultGenerator = gBetweennessCentrality(
+                graph,
+                startID,
+                traversalSettings.costName,
+                traversalSettings.costLimit,
+                traversalSettings.uTurnPenalty,
+                traversalSettings.stepLimit,
+                traversalSettings.delay,
             );
             break;
         default:
             console.log(`Sorry, there is no algorithm ${expr}.`);
+            return; // Exit the function if no valid algorithm is found
     };
 
-    for (let result of resultGenerator) {
-        console.log(result)
-        let ID = result[0];
-        const totalCost = Object.values(result[1])[0]['totalCost'];
-        addResultMesh(combinedLookup, ID, totalCost);
+    // The async generator yields intermediate results
+    // These need to be collected if a final combined result is needed.
+    const resultLog = [];
+    // Handle results using for await...of
+    for await (const result of resultGenerator) {
+        // Handle intermediate results
+        if (result && traversalSettings.algorithm == 'Betweenness Centrality'){
+            console.log('main, BC result', result)
+        } else if (result) {
+            resultLog.push(result);
+            const { id, predecessor, value } = result;
+            console.log("main, intermediate result", result);
+            addResultMesh(combinedLookup, id, value);
+        }
     }
-
+    console.log('resultLog', resultLog)
 };
 
 ///////////////////////////////
@@ -386,6 +475,7 @@ function onPointerUp(event) {
             console.log('Pointer released before 500ms');
             if (!rayIntersectedMeshes.length > 0) {
                 // If not on a line or point, create a vertex
+                console.log(rayPlaneIntersection);
                 topogeometry.createVertex(rayPlaneIntersection);
             } else {
                 // If on a geometry, traverse its graph
@@ -425,9 +515,9 @@ function onPointerUp(event) {
     v2id = null;
 };
 
-/////////
+///////////
 // Render
-/////////
+///////////
 function render() {
 
     // Check if the pointer is hovering over meshes

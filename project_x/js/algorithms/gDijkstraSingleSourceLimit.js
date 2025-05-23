@@ -1,3 +1,8 @@
+/**
+ * @fileoverview Description of file.
+ * Still not sure early exit is in the right place...
+ */
+
 import { Graph } from '../graph.js';
 import { PriorityQueue } from './priorityQueue.js';
 
@@ -12,9 +17,12 @@ import { PriorityQueue } from './priorityQueue.js';
  * @param {string} costName - The name of the cost to use (e.g. 'distance', 'angle', 'time', 'money').
  * @param {number} costLimit - An number setting the limit of the search.
  * @param {boolean} uTurnPenalty - Whether to apply a u-turn penalty or not.
- * @yields ['current_id', {'previous_id':{'totalCost':number}}].
+ * @param {number} [stepLimit=10] - Maximum cost per step.
+ * @param {number} [delay=20] - Delay between iterations (ms).
+ * @yields {Object} - Intermediate result with current node info.
  */
-export function* g_dijkstra_single_source_limit(graph, startID, costName, costLimit, uTurnPenalty, stepLimit=10) {
+export async function* gDijkstraSingleSourceLimit(
+    graph, startID, costName, costLimit, uTurnPenalty, stepLimit=10, delay=20) {
 
     let totalCosts = {}; // Object storing IDs and current calculated cost to reach them
     let predecessors = {}; // Object storing the IDs of each ID's current predecessor
@@ -27,33 +35,36 @@ export function* g_dijkstra_single_source_limit(graph, startID, costName, costLi
     // Add starting ID to priority queue with priority of 0
     pq.enqueue(startID, 0);
 
+    console.log(`Starting Dijkstra from ${startID} with costLimit ${costLimit}`);
+
     // Yield the starting ID and cost
-    yield [startID, { null: { 'totalCost': 0 } }]
+    yield {'id':startID, 'predecessor':'na', 'value': 0};
 
     // While the priority queue is not empty
     while (pq.values.length > 0) {
 
+        // Introduce generic pause to enable asynchronous functionality - need to rethink this.
+        await new Promise(resolve => setTimeout(resolve, delay)); // milliseconds
+
         // Get lowest cost ID from the priority queue
         // Comes as a Node with two properties, 'val' and 'priority'
         // 'val' is the ID
-        let current = pq.dequeue();
+        const current = pq.dequeue();
         // If already visited skip
         if (visited.has(current.val)) continue;
         //else mark as visited
         visited.add(current.val);
 
-        // If current shortest path (smallest cost) greater than limit, stop algorithm
-        if (totalCosts[current.val] > costLimit) break;
+        console.log(`Visiting node ${current.val}, current cost: ${totalCosts[current.val]}`);
 
         // For each neighbour of the current vertex, get its id and costs
-        // for (let neighbour_id of graph.vertices[current.val]['neighbours']) {
-        for (let [neighbourID, costs] of Object.entries(graph.links[current.val])) {
+        for (const [neighbourID, costs] of Object.entries(graph.links[current.val])) {
 
             // When finding the shortest angular path on an undirected edge graph it is typical to apply
             // a u-turn penalty to replicate the cost of entering an edge from one end, turning around
             // and leaving it via the same end.
             // The question marks are necessary to avoid TypeErrors if intermediate property name variables are undefined.
-            let stepCost = graph.links[current.val][neighbourID][costName];
+            let stepCost = costs[costName];
 
             if (uTurnPenalty) {
                 if (
@@ -61,17 +72,19 @@ export function* g_dijkstra_single_source_limit(graph, startID, costName, costLi
                     graph.links[current.val]?.[ neighbourID ]?.via
                 ) {
                 stepCost += 180;
+                console.log(`Applying U-turn penalty for node ${current.val} to ${neighbourID}`);
                 };
             };
 
-            // Optional step limit
-            if ( (stepLimit > 0) & (stepCost > stepLimit) ) {
+            // Optional step limit: skip neighbors with a step cost exceeding the step limit
+            if (stepLimit > 0 && stepCost > stepLimit) {
+                console.log(`Skipping ${neighbourID} due to step limit of ${stepLimit}`);
                 continue;
             };
 
             // Cost to reach the neighbour equals total cost to reach current vertex
             // plus extra cost to neighbour
-            let updatedCost = totalCosts[current.val] + stepCost;
+            const updatedCost = totalCosts[current.val] + stepCost;
 
             // If the distance is greater than the limit, skip this neighbor
             if (updatedCost > costLimit) continue;
@@ -79,14 +92,29 @@ export function* g_dijkstra_single_source_limit(graph, startID, costName, costLi
             // If the neighbour's id doesn't appear in the costs object yet OR
             // If the updated cost to the neighbour is less than the current total cost
             if (!totalCosts.hasOwnProperty(neighbourID) || updatedCost < totalCosts[neighbourID]) {
+
                 // (over)write the neighbour's id and distance into the distances
                 totalCosts[neighbourID] = updatedCost;
                 predecessors[neighbourID] = current.val;
-                // and (re)enqueue the neighbour and its new distance into the priority queue
+
+                // (re)enqueue the neighbour and its new distance into the priority queue
                 pq.enqueue(neighbourID, updatedCost);
-                // and (in this version) yield the new result
-                yield [neighbourID, { [current.val]: { 'totalCost': updatedCost } }]
+
+                console.log(`Updated cost for ${neighbourID}: ${updatedCost} via ${current.val}`);
+
+                // Yield the intermediate result
+                yield {'id':neighbourID, 'predecessor':current.val, 'value': updatedCost};
             };
         };
+
+        // If the current shortest path is greater than the cost limit, stop the algorithm
+        // This needs to come after the shortest path has been updated by the neighbours
+        if (totalCosts[current.val] > costLimit) {
+            console.log(`Cost limit of ${costLimit} exceeded at node ${current.val}, stopping search.`);
+            return; 
+        }
+
     };
+
+    console.log("Finished Dijkstra.");
 };
